@@ -111,6 +111,16 @@ function App() {
     }
   };
 
+  const handleCopyHtml = async (doc: GeneratedDoc) => {
+    try {
+      await navigator.clipboard.writeText(doc.content);
+      setProgressMessage('✓ HTML copied to clipboard!');
+      setTimeout(() => setProgressMessage(''), 3000);
+    } catch (err: any) {
+      setError('Failed to copy to clipboard');
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -230,16 +240,31 @@ function App() {
                 <div key={index} className="document-card">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <h3 style={{ margin: 0 }}>{doc.filename}</h3>
-                    <button
-                      className="btn-download-single"
-                      onClick={() => handleDownloadSingle(doc)}
-                      title="Download this document"
-                    >
-                      <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      Download
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      {/<[a-z][\s\S]*>/i.test(doc.content) && (
+                        <button
+                          className="btn-download-single"
+                          onClick={() => handleCopyHtml(doc)}
+                          title="Copy HTML to clipboard"
+                          style={{ background: '#2b3e50' }}
+                        >
+                          <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          Copy HTML
+                        </button>
+                      )}
+                      <button
+                        className="btn-download-single"
+                        onClick={() => handleDownloadSingle(doc)}
+                        title="Download this document"
+                      >
+                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download
+                      </button>
+                    </div>
                   </div>
                   {/<[a-z][\s\S]*>/i.test(doc.content) ? (
                     <div

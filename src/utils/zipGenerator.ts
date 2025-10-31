@@ -247,7 +247,18 @@ export async function downloadAsZip(
  * Downloads a single document
  */
 export function downloadSingleDocument(doc: GeneratedDoc): void {
-  const blob = new Blob([doc.content], { type: 'text/markdown' });
+  // Check if content is HTML
+  const isHtml = /<[a-z][\s\S]*>/i.test(doc.content);
   const sanitizedFilename = doc.filename.replace(/[^a-z0-9]/gi, '-').toLowerCase();
-  saveAs(blob, `${sanitizedFilename}.md`);
+
+  if (isHtml) {
+    // Wrap HTML content in full document structure
+    const fullHtml = markdownToHtml(doc.content, doc.filename);
+    const blob = new Blob([fullHtml], { type: 'text/html' });
+    saveAs(blob, `${sanitizedFilename}.html`);
+  } else {
+    // Save as Markdown
+    const blob = new Blob([doc.content], { type: 'text/markdown' });
+    saveAs(blob, `${sanitizedFilename}.md`);
+  }
 }
