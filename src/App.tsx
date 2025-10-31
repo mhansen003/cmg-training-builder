@@ -16,6 +16,7 @@ function App() {
   const [generatedDocs, setGeneratedDocs] = useState<GeneratedDoc[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [progressMessage, setProgressMessage] = useState<string>('');
+  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -119,6 +120,24 @@ function App() {
     } catch (err: any) {
       setError('Failed to copy to clipboard');
     }
+  };
+
+  const toggleCardExpand = (index: number) => {
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const getSummary = (content: string): string => {
+    // Extract first 200 characters or first paragraph as summary
+    const textContent = content.replace(/<[^>]*>/g, '').substring(0, 200);
+    return textContent + '...';
   };
 
   return (
@@ -236,17 +255,44 @@ function App() {
             </div>
 
             <div className="document-grid">
-              {generatedDocs.map((doc, index) => (
-                <div key={index} className="document-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h3 style={{ margin: 0 }}>{doc.filename}</h3>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                      {/<[a-z][\s\S]*>/i.test(doc.content) && (
+              {generatedDocs.map((doc, index) => {
+                const isExpanded = expandedCards.has(index);
+                const isHtml = /<[a-z][\s\S]*>/i.test(doc.content);
+
+                return (
+                  <div key={index} className="document-card-modern">
+                    {/* Card Header */}
+                    <div className="card-header">
+                      <h3 className="card-title">{doc.filename}</h3>
+                    </div>
+
+                    {/* Card Summary */}
+                    <div className="card-summary">
+                      <p>{getSummary(doc.content)}</p>
+                    </div>
+
+                    {/* Card Actions */}
+                    <div className="card-actions">
+                      <button
+                        className="btn-card-action btn-expand"
+                        onClick={() => toggleCardExpand(index)}
+                        title={isExpanded ? "Collapse" : "Expand to view full content"}
+                      >
+                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          {isExpanded ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          )}
+                        </svg>
+                        {isExpanded ? 'Collapse' : 'Expand'}
+                      </button>
+
+                      {isHtml && (
                         <button
-                          className="btn-download-single"
+                          className="btn-card-action btn-copy"
                           onClick={() => handleCopyHtml(doc)}
                           title="Copy HTML to clipboard"
-                          style={{ background: '#2b3e50' }}
                         >
                           <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -254,8 +300,9 @@ function App() {
                           Copy HTML
                         </button>
                       )}
+
                       <button
-                        className="btn-download-single"
+                        className="btn-card-action btn-download-primary"
                         onClick={() => handleDownloadSingle(doc)}
                         title="Download this document"
                       >
@@ -265,18 +312,23 @@ function App() {
                         Download
                       </button>
                     </div>
+
+                    {/* Expanded Content */}
+                    {isExpanded && (
+                      <div className="card-expanded-content">
+                        {isHtml ? (
+                          <div
+                            className="html-content"
+                            dangerouslySetInnerHTML={{ __html: doc.content }}
+                          />
+                        ) : (
+                          <pre className="text-content">{doc.content}</pre>
+                        )}
+                      </div>
+                    )}
                   </div>
-                  {/<[a-z][\s\S]*>/i.test(doc.content) ? (
-                    <div
-                      className="document-preview"
-                      dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 1500) + '...' }}
-                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif', whiteSpace: 'normal' }}
-                    />
-                  ) : (
-                    <pre className="document-preview">{doc.content.substring(0, 500)}...</pre>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {progressMessage && (

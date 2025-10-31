@@ -447,6 +447,153 @@
 }
 
 /* ============================================
+   MODERN CARD DESIGN
+   ============================================ */
+.document-card-modern {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e9ecef;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.document-card-modern:hover {
+  box-shadow: 0 4px 20px rgba(155, 197, 61, 0.15);
+  border-color: #9bc53d;
+}
+
+.card-header {
+  background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%);
+  padding: 1.5rem 2rem;
+}
+
+.card-title {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.card-summary {
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.card-summary p {
+  color: #5a6c7d;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  background: white;
+  flex-wrap: wrap;
+}
+
+.btn-card-action {
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.btn-expand {
+  background: #e9ecef;
+  color: #2b3e50;
+}
+
+.btn-expand:hover {
+  background: #d3d6da;
+  transform: translateY(-1px);
+}
+
+.btn-copy {
+  background: #2b3e50;
+  color: white;
+}
+
+.btn-copy:hover {
+  background: #1a2730;
+  transform: translateY(-1px);
+}
+
+.btn-download-primary {
+  background: #9bc53d;
+  color: white;
+  margin-left: auto;
+}
+
+.btn-download-primary:hover {
+  background: #8ab02f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.card-expanded-content {
+  padding: 2rem;
+  background: #ffffff;
+  border-top: 2px solid #e9ecef;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.html-content {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: #2b3e50;
+}
+
+.html-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.html-content ul {
+  margin-left: 1.5rem;
+}
+
+.html-content strong {
+  font-weight: 600;
+}
+
+.text-content {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #2b3e50;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+/* ============================================
    FOOTER
    ============================================ */
 .app-footer {
