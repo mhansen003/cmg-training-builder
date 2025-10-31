@@ -98,31 +98,38 @@ function App() {
         setProgressMessage('Content ready. Generating documents with AI...');
       }
 
-      // Generate documents one by one to track progress
-      const results: Array<{ type: DocumentType; content: string; error?: string }> = [];
+      // Mark all documents as processing and generate in parallel
+      const processingProgress: Record<string, 'pending' | 'processing' | 'complete'> = {};
+      selectedOutputs.forEach(type => {
+        processingProgress[type] = 'processing';
+      });
+      setGenerationProgress(processingProgress);
 
-      for (const docType of selectedOutputs) {
+      // Generate all documents in parallel for faster results
+      const generationPromises = selectedOutputs.map(async (docType) => {
         try {
-          // Mark as processing
-          setGenerationProgress(prev => ({ ...prev, [docType]: 'processing' }));
-
           const content = await generateTrainingDocument(docType, combinedContent, (msg) => {
             setProgressMessage(msg);
           });
 
-          results.push({ type: docType, content });
-
-          // Mark as complete
+          // Mark this document as complete
           setGenerationProgress(prev => ({ ...prev, [docType]: 'complete' }));
+
+          return { type: docType, content };
         } catch (err: any) {
-          results.push({
+          // Mark as complete even on error
+          setGenerationProgress(prev => ({ ...prev, [docType]: 'complete' }));
+
+          return {
             type: docType,
             content: '',
             error: err.message || 'Generation failed'
-          });
-          setGenerationProgress(prev => ({ ...prev, [docType]: 'complete' }));
+          };
         }
-      }
+      });
+
+      // Wait for all documents to complete
+      const results = await Promise.all(generationPromises);
 
       // Convert results to GeneratedDoc format
       const docs: GeneratedDoc[] = results.map(result => {
