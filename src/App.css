@@ -215,6 +215,7 @@
   grid-template-columns: 350px 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
+  padding-bottom: 8rem; /* Space for floating button */
 }
 
 .left-column {
@@ -464,36 +465,57 @@
    ACTIONS
    ============================================ */
 .action-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-top: 2px solid rgba(155, 197, 61, 0.2);
 }
 
 .btn-generate {
   background: linear-gradient(135deg, #9bc53d 0%, #8ab02f 100%);
   color: white;
   border: none;
-  padding: 1rem 2.5rem;
-  border-radius: 10px;
+  padding: 1.25rem 3rem;
+  border-radius: 12px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.75rem;
   transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(155, 197, 61, 0.3);
+  box-shadow: 0 6px 25px rgba(155, 197, 61, 0.4);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 6px 25px rgba(155, 197, 61, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 35px rgba(155, 197, 61, 0.6);
+  }
 }
 
 .btn-generate:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(155, 197, 61, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(155, 197, 61, 0.5);
+  animation: none;
 }
 
 .btn-generate:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  animation: none;
 }
 
 .btn-primary {
