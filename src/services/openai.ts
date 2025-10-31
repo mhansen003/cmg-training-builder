@@ -1241,7 +1241,7 @@ IMPORTANT:
 - Focus on polish and refinement, not restructuring
 - Maintain all links, images, and formatting
 
-CRITICAL: Return ONLY the cleaned HTML content. Do NOT include explanations or meta-commentary.`;
+CRITICAL: Return ONLY the cleaned HTML content. Do NOT include explanations, meta-commentary, or markdown code fences (no \`\`\`html or \`\`\`). Return pure HTML only.`;
 
     const userPrompt = `Please clean up and polish the following HTML content, making it more professional, clear, and well-formatted:
 
@@ -1265,7 +1265,16 @@ Improve the grammar, clarity, and formatting while maintaining the structure and
       throw new Error('No content generated from AI cleanup');
     }
 
-    return content;
+    // Strip markdown code fences if present (```html or ```)
+    let cleanedContent = content.trim();
+
+    // Remove opening code fence with optional language identifier
+    cleanedContent = cleanedContent.replace(/^```(?:html|HTML)?\s*\n?/g, '');
+
+    // Remove closing code fence
+    cleanedContent = cleanedContent.replace(/\n?```\s*$/g, '');
+
+    return cleanedContent.trim();
   } catch (error: any) {
     console.error('Error cleaning up content:', error);
     if (error.message?.includes('API key')) {
