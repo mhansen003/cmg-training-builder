@@ -411,22 +411,34 @@ Or paste meeting notes, specifications, or any content you want to transform int
 
                 return (
                   <div key={docType} className={`progress-item progress-${status}`}>
-                    <div className="progress-icon">
-                      {status === 'complete' && (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="icon-complete">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      )}
-                      {status === 'processing' && (
-                        <div className="spinner-small"></div>
-                      )}
-                      {status === 'pending' && (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="icon-pending">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      )}
+                    <div className="progress-item-header">
+                      <div className="progress-icon">
+                        {status === 'complete' && (
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="icon-complete">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                        {status === 'processing' && (
+                          <div className="spinner-small"></div>
+                        )}
+                        {status === 'pending' && (
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="icon-pending">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="progress-label">{option?.label || docType}</span>
                     </div>
-                    <span className="progress-label">{option?.label || docType}</span>
+                    {status === 'processing' && (
+                      <div className="progress-bar-container">
+                        <div className="progress-bar-fill"></div>
+                      </div>
+                    )}
+                    {status === 'complete' && (
+                      <div className="progress-bar-container">
+                        <div className="progress-bar-fill complete"></div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
