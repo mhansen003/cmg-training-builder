@@ -1,0 +1,611 @@
+/* ADO Import Modal */
+.ado-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+.ado-modal-container {
+  background: white;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ado-modal-header {
+  padding: 1.75rem 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
+}
+
+.ado-modal-header h2 {
+  color: #2d3748;
+  font-size: 1.75rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.ado-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+  transition: all 0.2s;
+  padding: 0.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ado-modal-close:hover {
+  color: #2d3748;
+  background: #e2e8f0;
+}
+
+.ado-modal-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.ado-modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Search Section */
+.ado-search-section {
+  margin-bottom: 2rem;
+}
+
+.ado-search-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ado-search-input {
+  flex: 1;
+  padding: 0.875rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.ado-search-input:focus {
+  outline: none;
+  border-color: #9bc53d;
+  box-shadow: 0 0 0 4px rgba(155, 197, 61, 0.1);
+}
+
+.ado-search-btn {
+  padding: 0.875rem 1.5rem;
+  background: #9bc53d;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  justify-content: center;
+}
+
+.ado-search-btn:hover:not(:disabled) {
+  background: #8bb32d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.ado-search-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ado-search-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Filters */
+.ado-filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.ado-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ado-filter-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.ado-filter-select {
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  background: white;
+  cursor: pointer;
+}
+
+.ado-filter-select:focus {
+  outline: none;
+  border-color: #9bc53d;
+  box-shadow: 0 0 0 3px rgba(155, 197, 61, 0.1);
+}
+
+/* Error Message */
+.ado-error-message {
+  background: #fed7d7;
+  border-left: 4px solid #fc8181;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #c53030;
+  font-weight: 500;
+}
+
+.ado-error-message svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* Results Section */
+.ado-results-section {
+  margin-bottom: 2rem;
+}
+
+.ado-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ado-results-header h3 {
+  font-size: 1.15rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0;
+}
+
+.ado-selected-count {
+  background: #9bc53d;
+  color: white;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.ado-results-list {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f7fafc;
+}
+
+/* Loading State */
+.ado-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  color: #718096;
+}
+
+.ado-loading p {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+/* Empty State */
+.ado-empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #718096;
+}
+
+.ado-empty-state p {
+  font-size: 1rem;
+}
+
+/* Work Item Card */
+.ado-work-item {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ado-work-item:hover {
+  background: #f7fafc;
+}
+
+.ado-work-item.selected {
+  background: #f0fdf4;
+  border-left: 4px solid #9bc53d;
+}
+
+.ado-work-item:first-child {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.ado-work-item:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.ado-work-item-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #9bc53d;
+  flex-shrink: 0;
+}
+
+.ado-work-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ado-work-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.ado-work-item-id {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #4a5568;
+  font-family: 'Courier New', monospace;
+}
+
+.ado-work-item-project {
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: #4338ca;
+  text-transform: none;
+  letter-spacing: normal;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ado-work-item-state {
+  padding: 0.25rem 0.625rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.state-new {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+.state-active {
+  background: #feebc8;
+  color: #c05621;
+}
+
+.state-resolved {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.state-closed {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+.state-removed {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.ado-work-item-title {
+  font-size: 1rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.ado-work-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ado-tag {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Include List */
+.ado-include-list {
+  background: #f0fdf4;
+  border: 2px solid #9bc53d;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.ado-include-list h3 {
+  font-size: 1rem;
+  color: #22543d;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ado-include-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ado-include-item {
+  background: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #9bc53d;
+}
+
+.ado-include-id {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #4a5568;
+  font-family: 'Courier New', monospace;
+  flex-shrink: 0;
+}
+
+.ado-include-title {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #2d3748;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ado-include-remove {
+  background: none;
+  border: none;
+  color: #fc8181;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ado-include-remove:hover {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+/* Modal Footer */
+.ado-modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: #f7fafc;
+}
+
+.ado-btn-cancel,
+.ado-btn-import {
+  padding: 0.875rem 1.75rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.ado-btn-cancel {
+  background: white;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+}
+
+.ado-btn-cancel:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.ado-btn-import {
+  background: #9bc53d;
+  color: white;
+}
+
+.ado-btn-import:hover:not(:disabled) {
+  background: #8bb32d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.ado-btn-import:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Spinners */
+.spinner-sm,
+.spinner-lg {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.spinner-sm {
+  width: 18px;
+  height: 18px;
+}
+
+.spinner-lg {
+  width: 50px;
+  height: 50px;
+  border-width: 4px;
+  border-color: rgba(155, 197, 61, 0.3);
+  border-top-color: #9bc53d;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Scrollbar Styling */
+.ado-results-list::-webkit-scrollbar,
+.ado-modal-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ado-results-list::-webkit-scrollbar-track,
+.ado-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.ado-results-list::-webkit-scrollbar-thumb,
+.ado-modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.ado-results-list::-webkit-scrollbar-thumb:hover,
+.ado-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ado-modal-container {
+    max-width: 100%;
+    max-height: 95vh;
+    margin: 0.5rem;
+  }
+
+  .ado-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .ado-work-item-project {
+    max-width: 120px;
+  }
+
+  .ado-search-bar {
+    flex-direction: column;
+  }
+
+  .ado-search-btn {
+    width: 100%;
+  }
+
+  .ado-modal-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .ado-modal-body {
+    padding: 1.5rem;
+  }
+
+  .ado-modal-footer {
+    padding: 1.25rem 1.5rem;
+    flex-direction: column-reverse;
+  }
+
+  .ado-btn-cancel,
+  .ado-btn-import {
+    width: 100%;
+  }
+}

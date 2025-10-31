@@ -2,11 +2,13 @@ import { useState } from 'react';
 import './App.css';
 import FileUpload from './components/FileUpload';
 import EditorModal from './components/EditorModal';
+import ADOImportModal from './components/ADOImportModal';
 import { DOCUMENT_OPTIONS } from './config/documentOptions';
 import { processFiles } from './utils/fileProcessor';
 import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI, generateClarifyingQuestions, categorizeFeatures } from './services/openai';
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
+import type { ADOWorkItem } from './services/ado';
 
 type AppStep = 'upload' | 'wizard' | 'processing' | 'preview';
 
@@ -46,6 +48,9 @@ function App() {
   const [additionalOutputs, setAdditionalOutputs] = useState<DocumentType[]>([]);
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
   const [generatingTypes, setGeneratingTypes] = useState<DocumentType[]>([]);
+
+  // ADO import state
+  const [showADOImportModal, setShowADOImportModal] = useState(false);
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -282,6 +287,33 @@ function App() {
 
   const handleRemoveFile = (index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  /**
+   * Handle importing ADO work items
+   * Converts ADO work item data to text format for processing
+   */
+  const handleADOImport = (workItems: ADOWorkItem[]) => {
+    if (workItems.length === 0) return;
+
+    if (workItems.length === 1) {
+      const wi = workItems[0];
+      const description = wi.fields['System.Description'] || '';
+      const strippedDescription = description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+
+      const importedText = `Imported from ADO #${wi.id}\n\nTitle: ${wi.fields['System.Title']}\n\nDescription:\n${strippedDescription}`;
+      setManualText(importedText);
+    } else {
+      // Multiple work items - combine
+      const combinedText = workItems.map(wi => {
+        const description = wi.fields['System.Description'] || '';
+        const strippedDescription = description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+        return `ADO #${wi.id}: ${wi.fields['System.Title']}\n${strippedDescription}`;
+      }).join('\n\n---\n\n');
+
+      const importedText = `Imported ${workItems.length} work items from ADO:\n\n${combinedText}`;
+      setManualText(importedText);
+    }
   };
 
   const toggleDownloadSelection = (index: number) => {
@@ -640,6 +672,21 @@ function App() {
                   onFilesSelected={handleFilesSelected}
                   onRemoveFile={handleRemoveFile}
                 />
+
+                <div className="ado-import-section">
+                  <button
+                    className="ado-import-trigger-btn"
+                    onClick={() => setShowADOImportModal(true)}
+                  >
+                    <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Import from Azure DevOps
+                  </button>
+                  <p className="ado-import-hint">
+                    Search and import existing work items from ADO
+                  </p>
+                </div>
 
                 <div className="action-container">
                   <button
@@ -1133,6 +1180,13 @@ function App() {
           </div>
         </div>
       )}
+
+      {/* ADO Import Modal */}
+      <ADOImportModal
+        isOpen={showADOImportModal}
+        onClose={() => setShowADOImportModal(false)}
+        onImport={handleADOImport}
+      />
 
       {/* Toast Notification */}
       {showToast && (

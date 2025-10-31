@@ -22,7 +22,7 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title, r
   }, [content]);
 
   useEffect(() => {
-    let timeoutId: number;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     const handleSelectionChange = () => {
       // Debounce to prevent rapid updates during selection
