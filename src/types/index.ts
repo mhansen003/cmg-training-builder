@@ -19,6 +19,7 @@ export interface DocumentOption {
   label: string;
   description: string;
   prompt: string;
+  icon: string;
 }
 
 export interface FileContent {

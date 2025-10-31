@@ -8,7 +8,12 @@ import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI } fro
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
 
-type AppStep = 'upload' | 'processing' | 'preview';
+type AppStep = 'upload' | 'wizard' | 'processing' | 'preview';
+
+interface WizardQuestion {
+  question: string;
+  answer: string;
+}
 
 function App() {
   const [step, setStep] = useState<AppStep>('upload');
@@ -27,6 +32,9 @@ function App() {
   const [selectedForDownload, setSelectedForDownload] = useState<Set<number>>(new Set());
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [wizardQuestions, setWizardQuestions] = useState<WizardQuestion[]>([]);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [sourceContent, setSourceContent] = useState<string>('');
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -177,6 +185,12 @@ function App() {
     setGeneratedDocs([]);
     setError(null);
     setProgressMessage('');
+    setGenerationProgress({});
+    setSelectedForDownload(new Set());
+    setViewingIndex(null);
+    setEditingIndex(null);
+    setIsViewerOpen(false);
+    setIsEditorOpen(false);
   };
 
   const handleRemoveFile = (index: number) => {
@@ -337,7 +351,10 @@ function App() {
                           onChange={() => handleOutputToggle(option.id)}
                         />
                         <div className="checkbox-content">
-                          <span className="checkbox-label">{option.label}</span>
+                          <span className="checkbox-label">
+                            <span className="artifact-icon">{option.icon}</span>
+                            {option.label}
+                          </span>
                           <span className="checkbox-description">{option.description}</span>
                         </div>
                       </label>
