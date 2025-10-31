@@ -241,7 +241,15 @@ function App() {
                       Download
                     </button>
                   </div>
-                  <pre className="document-preview">{doc.content.substring(0, 500)}...</pre>
+                  {/<[a-z][\s\S]*>/i.test(doc.content) ? (
+                    <div
+                      className="document-preview"
+                      dangerouslySetInnerHTML={{ __html: doc.content.substring(0, 1500) + '...' }}
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif', whiteSpace: 'normal' }}
+                    />
+                  ) : (
+                    <pre className="document-preview">{doc.content.substring(0, 500)}...</pre>
+                  )}
                 </div>
               ))}
             </div>
