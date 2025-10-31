@@ -36,6 +36,7 @@ function App() {
   // Wizard state
   const [wizardQuestions, setWizardQuestions] = useState<WizardQuestion[]>([]);
   const [sourceContent, setSourceContent] = useState<string>('');
+  const [showAnalysisModal, setShowAnalysisModal] = useState(false);
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -97,6 +98,7 @@ function App() {
     }
 
     setError(null);
+    setShowAnalysisModal(true);
     setProgressMessage('Analyzing content...');
 
     try {
@@ -116,6 +118,8 @@ function App() {
 
       if (hasMultipleFeatures) {
         setProgressMessage('Multiple features detected! Organizing content...');
+        // Add a small delay so user can see the message
+        await new Promise(resolve => setTimeout(resolve, 800));
       }
 
       // Store the categorized content
@@ -125,17 +129,21 @@ function App() {
       setProgressMessage('Generating clarifying questions...');
       const questions = await generateClarifyingQuestions(categorizedContent, selectedOutputs);
 
+      // Close the analysis modal
+      setShowAnalysisModal(false);
+      setProgressMessage('');
+
       if (questions.length > 0) {
         // If there are questions, show the wizard
         setWizardQuestions(questions.map(q => ({ question: q, answer: '' })));
         setStep('wizard');
-        setProgressMessage('');
       } else {
         // No questions needed, proceed directly to generation
-        await proceedWithGeneration(combinedContent);
+        await proceedWithGeneration(categorizedContent);
       }
     } catch (err: any) {
       console.error('Error during pre-generation:', err);
+      setShowAnalysisModal(false);
       setError(err.message || 'Failed to analyze content. Please try again.');
       setProgressMessage('');
     }
@@ -773,6 +781,22 @@ function App() {
         title={editingIndex !== null ? generatedDocs[editingIndex].filename : ''}
         onAICleanup={handleAICleanup}
       />
+
+      {/* Analysis Modal */}
+      {showAnalysisModal && (
+        <div className="modal-overlay">
+          <div className="analysis-modal">
+            <div className="analysis-spinner"></div>
+            <h2 className="analysis-title">Preparing Your Documents</h2>
+            <p className="analysis-message">{progressMessage}</p>
+            <div className="analysis-dots">
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span className="dot"></span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {showToast && (

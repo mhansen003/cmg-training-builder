@@ -572,6 +572,94 @@
 }
 
 /* ============================================
+   ANALYSIS MODAL
+   ============================================ */
+.analysis-modal {
+  background: white;
+  padding: 3rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 500px;
+  position: relative;
+  animation: slideInScale 0.3s ease-out;
+}
+
+@keyframes slideInScale {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.analysis-spinner {
+  width: 70px;
+  height: 70px;
+  border: 6px solid #e0e0e0;
+  border-top-color: #9bc53d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 2rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.analysis-title {
+  color: #2b3e50;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+}
+
+.analysis-message {
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  margin: 0 0 1.5rem 0;
+  min-height: 1.5em;
+}
+
+.analysis-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.analysis-dots .dot {
+  width: 8px;
+  height: 8px;
+  background: #9bc53d;
+  border-radius: 50%;
+  animation: dotPulse 1.4s ease-in-out infinite;
+}
+
+.analysis-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.analysis-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* ============================================
    WIZARD
    ============================================ */
 .wizard-section {
