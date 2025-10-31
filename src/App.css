@@ -1023,11 +1023,47 @@
   display: flex;
   flex-direction: column;
   min-height: 400px; /* Increased from 350px */
+  position: relative; /* Enable positioning for overlay */
 }
 
 .document-card-modern:hover {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-color: #d1d5db;
+}
+
+/* Regenerating Overlay */
+.card-regenerating-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.regenerating-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #e0e0e0;
+  border-top-color: #d97706;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.regenerating-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #d97706;
+  margin: 0;
+  text-align: center;
 }
 
 .card-header {
@@ -1109,10 +1145,19 @@
 
 .card-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
   background: white;
+}
+
+/* Make last two buttons span appropriate columns */
+.card-actions button:nth-child(4) {
+  grid-column: 1 / 2;
+}
+
+.card-actions button:nth-child(5) {
+  grid-column: 2 / 4;
 }
 
 .btn-card-action {
@@ -1174,6 +1219,17 @@
 .btn-download:hover {
   background: #dcedc8;
   border-color: #9ccc65;
+}
+
+.btn-regenerate {
+  background: #fef3e2;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+.btn-regenerate:hover {
+  background: #fde68a;
+  border-color: #fbbf24;
 }
 
 .card-expanded-content {

@@ -38,6 +38,9 @@ function App() {
   const [sourceContent, setSourceContent] = useState<string>('');
   const [showAnalysisModal, setShowAnalysisModal] = useState(false);
 
+  // Regenerate state
+  const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
+
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
     setError(null);
@@ -366,6 +369,37 @@ function App() {
     }
   };
 
+  const handleRegenerateArtifact = async (index: number) => {
+    try {
+      const doc = generatedDocs[index];
+      setRegeneratingIndex(index);
+
+      // Regenerate this specific document
+      const newContent = await generateTrainingDocument(doc.type, sourceContent, (msg) => {
+        console.log('Regenerating:', msg);
+      });
+
+      // Update the document in the array
+      const updatedDocs = [...generatedDocs];
+      updatedDocs[index] = {
+        ...updatedDocs[index],
+        content: newContent,
+      };
+      setGeneratedDocs(updatedDocs);
+
+      setToastMessage('✓ Document regenerated successfully!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } catch (error: any) {
+      console.error('Regeneration failed:', error);
+      setToastMessage('✗ Regeneration failed: ' + error.message);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } finally {
+      setRegeneratingIndex(null);
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -623,6 +657,14 @@ function App() {
                 const docOption = DOCUMENT_OPTIONS.find(o => o.id === doc.type);
                 return (
                   <div key={index} className="document-card-modern">
+                    {/* Regenerating Overlay */}
+                    {regeneratingIndex === index && (
+                      <div className="card-regenerating-overlay">
+                        <div className="regenerating-spinner"></div>
+                        <p className="regenerating-text">Regenerating...</p>
+                      </div>
+                    )}
+
                     {/* Card Header */}
                     <div className="card-header">
                       <div className="card-header-top">
@@ -670,6 +712,17 @@ function App() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Edit
+                      </button>
+
+                      <button
+                        className="btn-card-action btn-regenerate"
+                        onClick={() => handleRegenerateArtifact(index)}
+                        title="Regenerate document with AI"
+                      >
+                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Regenerate
                       </button>
 
                       <button

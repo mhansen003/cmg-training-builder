@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import './EditorModal.css';
 
 interface EditorModalProps {
@@ -22,28 +22,40 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title, r
   }, [content]);
 
   useEffect(() => {
-    const handleSelectionChange = () => {
-      const selection = window.getSelection();
-      if (!selection || !editorRef.current) {
-        setHasSelection(false);
-        return;
-      }
+    let timeoutId: number;
 
-      // Only update if the selection is within the editor
-      const isWithinEditor = editorRef.current.contains(selection.anchorNode);
-      if (isWithinEditor) {
-        const hasText = selection.toString().trim().length > 0;
-        setHasSelection(hasText);
-      } else {
-        setHasSelection(false);
-      }
+    const handleSelectionChange = () => {
+      // Debounce to prevent rapid updates during selection
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const selection = window.getSelection();
+        if (!selection || !editorRef.current) {
+          setHasSelection(false);
+          return;
+        }
+
+        // Only update if the selection is within the editor
+        const isWithinEditor = editorRef.current.contains(selection.anchorNode);
+        if (isWithinEditor) {
+          const hasText = selection.toString().trim().length > 0;
+          setHasSelection(hasText);
+        } else {
+          setHasSelection(false);
+        }
+      }, 50); // Small delay to prevent interference during selection
     };
 
     document.addEventListener('selectionchange', handleSelectionChange);
     return () => {
+      clearTimeout(timeoutId);
       document.removeEventListener('selectionchange', handleSelectionChange);
     };
   }, []);
+
+  // Memoize button text to prevent unnecessary re-renders
+  const polishButtonText = useMemo(() => {
+    return hasSelection ? 'Polish Selected Text' : 'Polish All Content';
+  }, [hasSelection]);
 
   const handleSave = () => {
     const htmlContent = editorRef.current?.innerHTML || editedContent;
@@ -169,7 +181,7 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title, r
                         <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
-                        ✨ {hasSelection ? 'Polish Selected Text' : 'Polish All Content'}
+                        ✨ {polishButtonText}
                       </>
                     )}
                   </button>
