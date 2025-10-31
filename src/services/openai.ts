@@ -790,3 +790,69 @@ Transform this into clear, professional content with proper structure, context, 
     throw new Error(`Failed to enhance content: ${error.message}`);
   }
 }
+
+/**
+ * Cleans up and polishes HTML content with AI
+ */
+export async function cleanupContentWithAI(
+  htmlContent: string
+): Promise<string> {
+  try {
+    const client = createClient();
+
+    const systemPrompt = `You are an expert content editor and HTML formatter at CMG Financial.
+
+Your task is to clean up, improve, and polish HTML content for professional business communications.
+
+CLEANUP GUIDELINES:
+- Fix any grammatical errors or typos
+- Improve sentence structure and clarity
+- Ensure consistent tone and style
+- Clean up HTML formatting (remove unnecessary tags, fix nesting)
+- Improve readability and flow
+- Maintain CMG Financial's professional voice
+- Keep all existing HTML styling and structure intact
+- Ensure proper use of bold, lists, and formatting
+- Remove redundancy and improve conciseness
+- Make the content more engaging and scannable
+
+IMPORTANT:
+- Preserve all CMG branding colors and styles
+- Keep the same structure and sections
+- Don't add or remove major content sections
+- Focus on polish and refinement, not restructuring
+- Maintain all links, images, and formatting
+
+CRITICAL: Return ONLY the cleaned HTML content. Do NOT include explanations or meta-commentary.`;
+
+    const userPrompt = `Please clean up and polish the following HTML content, making it more professional, clear, and well-formatted:
+
+HTML CONTENT:
+${htmlContent}
+
+Improve the grammar, clarity, and formatting while maintaining the structure and CMG branding.`;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4-turbo-preview',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.5,
+      max_tokens: 3000,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('No content generated from AI cleanup');
+    }
+
+    return content;
+  } catch (error: any) {
+    console.error('Error cleaning up content:', error);
+    if (error.message?.includes('API key')) {
+      throw new Error('OpenAI API key is missing or invalid. Please check your environment variables.');
+    }
+    throw new Error(`Failed to cleanup content: ${error.message}`);
+  }
+}

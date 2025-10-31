@@ -4,7 +4,7 @@ import FileUpload from './components/FileUpload';
 import EditorModal from './components/EditorModal';
 import { DOCUMENT_OPTIONS } from './config/documentOptions';
 import { processFiles } from './utils/fileProcessor';
-import { generateTrainingDocument, enhanceTextWithAI } from './services/openai';
+import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI } from './services/openai';
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
 
@@ -39,6 +39,16 @@ function App() {
         ? prev.filter(id => id !== outputId)
         : [...prev, outputId]
     );
+  };
+
+  const handleCheckAll = () => {
+    if (selectedOutputs.length === DOCUMENT_OPTIONS.length) {
+      // If all are selected, unselect all
+      setSelectedOutputs([]);
+    } else {
+      // Otherwise, select all
+      setSelectedOutputs(DOCUMENT_OPTIONS.map(opt => opt.id));
+    }
   };
 
   const handleEnhanceText = async () => {
@@ -255,6 +265,22 @@ function App() {
     }
   };
 
+  const handleAICleanup = async (content: string): Promise<string> => {
+    try {
+      const cleanedContent = await cleanupContentWithAI(content);
+      setToastMessage('✓ Content polished with AI!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      return cleanedContent;
+    } catch (error: any) {
+      console.error('AI cleanup failed:', error);
+      setToastMessage('✗ AI cleanup failed: ' + error.message);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      throw error;
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -292,6 +318,16 @@ function App() {
               <div className="left-column">
                 <div className="output-options-sidebar">
                   <h3>📝 Select Output Types</h3>
+                  <label className="checkbox-item check-all-item">
+                    <input
+                      type="checkbox"
+                      checked={selectedOutputs.length === DOCUMENT_OPTIONS.length}
+                      onChange={handleCheckAll}
+                    />
+                    <div className="checkbox-content">
+                      <span className="checkbox-label" style={{ fontWeight: 600 }}>Check All</span>
+                    </div>
+                  </label>
                   <div className="checkbox-list">
                     {DOCUMENT_OPTIONS.map(option => (
                       <label key={option.id} className="checkbox-item">
@@ -313,8 +349,7 @@ function App() {
               {/* Right Column: Text Input and File Upload */}
               <div className="right-column">
                 <div className="section-header">
-                  <h2>Describe Your Issue or Feature Request</h2>
-                  <p>Drop documents, type your issue, or both. Our AI will extract the necessary information automatically.</p>
+                  <p>Drop documents or screen shots of your feature, or describe it in text in the box below</p>
                 </div>
 
                 <textarea
@@ -368,20 +403,20 @@ function App() {
                   onFilesSelected={handleFilesSelected}
                   onRemoveFile={handleRemoveFile}
                 />
-              </div>
-            </div>
 
-            <div className="action-container">
-              <button
-                className="btn-generate"
-                onClick={handleGenerate}
-                disabled={(files.length === 0 && !manualText.trim()) || selectedOutputs.length === 0}
-              >
-                <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Generate Communications with AI
-              </button>
+                <div className="action-container">
+                  <button
+                    className="btn-generate"
+                    onClick={handleGenerate}
+                    disabled={(files.length === 0 && !manualText.trim()) || selectedOutputs.length === 0}
+                  >
+                    <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Generate Communications with AI
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -601,6 +636,7 @@ function App() {
         content={editingIndex !== null ? generatedDocs[editingIndex].content : ''}
         onSave={handleSaveEdit}
         title={editingIndex !== null ? generatedDocs[editingIndex].filename : ''}
+        onAICleanup={handleAICleanup}
       />
 
       {/* Toast Notification */}
