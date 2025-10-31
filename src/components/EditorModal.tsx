@@ -7,9 +7,10 @@ interface EditorModalProps {
   content: string;
   onSave: (newContent: string) => void;
   title: string;
+  readOnly?: boolean;
 }
 
-export default function EditorModal({ isOpen, onClose, content, onSave, title }: EditorModalProps) {
+export default function EditorModal({ isOpen, onClose, content, onSave, title, readOnly = false }: EditorModalProps) {
   const [editedContent, setEditedContent] = useState(content);
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +25,9 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title }:
   };
 
   const handleCancel = () => {
-    setEditedContent(content);
+    if (!readOnly) {
+      setEditedContent(content);
+    }
     onClose();
   };
 
@@ -34,7 +37,7 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title }:
     <div className="modal-overlay" onClick={handleCancel}>
       <div className="modal-container" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>Edit {title}</h2>
+          <h2>{readOnly ? 'View' : 'Edit'} {title}</h2>
           <button className="modal-close" onClick={handleCancel}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -43,7 +46,7 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title }:
         </div>
 
         <div className="modal-body">
-          <div className="editor-toolbar">
+          {!readOnly && <div className="editor-toolbar">
             <button
               onClick={() => document.execCommand('bold')}
               title="Bold"
@@ -102,25 +105,28 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title }:
             >
               1. List
             </button>
-          </div>
+          </div>}
 
           <div
             ref={editorRef}
             className="wysiwyg-editor"
-            contentEditable
+            contentEditable={!readOnly}
             dangerouslySetInnerHTML={{ __html: editedContent }}
-            onInput={(e) => setEditedContent(e.currentTarget.innerHTML)}
+            onInput={(e) => !readOnly && setEditedContent(e.currentTarget.innerHTML)}
+            style={readOnly ? { cursor: 'default' } : {}}
           />
         </div>
 
-        <div className="modal-footer">
-          <button className="btn-modal-cancel" onClick={handleCancel}>
-            Cancel
-          </button>
-          <button className="btn-modal-save" onClick={handleSave}>
-            Save Changes
-          </button>
-        </div>
+        {!readOnly && (
+          <div className="modal-footer">
+            <button className="btn-modal-cancel" onClick={handleCancel}>
+              Cancel
+            </button>
+            <button className="btn-modal-save" onClick={handleSave}>
+              Save Changes
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

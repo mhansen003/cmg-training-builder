@@ -19,7 +19,8 @@ function App() {
   const [generatedDocs, setGeneratedDocs] = useState<GeneratedDoc[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [progressMessage, setProgressMessage] = useState<string>('');
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [viewingIndex, setViewingIndex] = useState<number | null>(null);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [generationProgress, setGenerationProgress] = useState<Record<string, 'pending' | 'processing' | 'complete'>>({});
@@ -220,22 +221,15 @@ function App() {
     }
   };
 
-  const toggleCardExpand = (index: number) => {
-    setExpandedCards(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
-
   const getSummary = (content: string): string => {
     // Extract first 200 characters or first paragraph as summary
     const textContent = content.replace(/<[^>]*>/g, '').substring(0, 200);
     return textContent + '...';
+  };
+
+  const handleOpenViewer = (index: number) => {
+    setViewingIndex(index);
+    setIsViewerOpen(true);
   };
 
   const handleOpenEditor = (index: number) => {
@@ -455,7 +449,6 @@ Or paste meeting notes, specifications, or any content you want to transform int
 
             <div className="document-grid">
               {generatedDocs.map((doc, index) => {
-                const isExpanded = expandedCards.has(index);
                 const isHtml = /<[a-z][\s\S]*>/i.test(doc.content);
 
                 return (
@@ -485,17 +478,14 @@ Or paste meeting notes, specifications, or any content you want to transform int
                     <div className="card-actions">
                       <button
                         className="btn-card-action btn-expand"
-                        onClick={() => toggleCardExpand(index)}
-                        title={isExpanded ? "Collapse" : "Expand to view full content"}
+                        onClick={() => handleOpenViewer(index)}
+                        title="View full content in modal"
                       >
                         <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          {isExpanded ? (
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                          ) : (
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          )}
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
-                        {isExpanded ? 'Collapse' : 'Expand'}
+                        View
                       </button>
 
                       <button
@@ -533,20 +523,6 @@ Or paste meeting notes, specifications, or any content you want to transform int
                         Download
                       </button>
                     </div>
-
-                    {/* Expanded Content */}
-                    {isExpanded && (
-                      <div className="card-expanded-content">
-                        {isHtml ? (
-                          <div
-                            className="html-content"
-                            dangerouslySetInnerHTML={{ __html: doc.content }}
-                          />
-                        ) : (
-                          <pre className="text-content">{doc.content}</pre>
-                        )}
-                      </div>
-                    )}
                   </div>
                 );
               })}
@@ -614,6 +590,16 @@ Or paste meeting notes, specifications, or any content you want to transform int
           </p>
         </div>
       </footer>
+
+      {/* View Modal (Read-Only) */}
+      <EditorModal
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+        content={viewingIndex !== null ? generatedDocs[viewingIndex].content : ''}
+        onSave={() => {}} // No-op for viewing
+        title={viewingIndex !== null ? generatedDocs[viewingIndex].filename : ''}
+        readOnly={true}
+      />
 
       {/* WYSIWYG Editor Modal */}
       <EditorModal

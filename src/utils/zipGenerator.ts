@@ -149,28 +149,19 @@ Project: ${projectName}
 CONTENTS
 ========
 
-${docs.map((d, i) => `${i + 1}. ${d.filename}.md`).join('\n')}
-
-FORMATS
-=======
-
-Each document is provided in multiple formats:
-- Markdown (.md) - Editable, version-control friendly
-- HTML (.html) - Ready to view in any web browser
-- Text (.txt) - Plain text format
+${docs.map((d, i) => `${i + 1}. ${d.filename}.html`).join('\n')}
 
 USAGE
 =====
 
-1. Markdown Files: Open in any text editor or Markdown viewer
-2. HTML Files: Double-click to open in your web browser
-3. Text Files: Open in any text editor
+Double-click any HTML file to open in your web browser.
+The documents are styled and ready to view or share.
 
 EDITING
 =======
 
-Feel free to edit these documents as needed. The markdown files
-are the easiest to modify and can be converted to other formats.
+You can open HTML files in any text editor to modify the content,
+or use the Communications Builder's Edit feature for a visual editing experience.
 
 ABOUT
 =====
@@ -202,24 +193,13 @@ export async function downloadAsZip(
       throw new Error('Failed to create main folder');
     }
 
-    // Add each document in multiple formats
+    // Add each document as HTML only
     docs.forEach((doc) => {
       const sanitizedFilename = doc.filename.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 
-      // Markdown version
-      mainFolder.file(`${sanitizedFilename}.md`, doc.content);
-
-      // HTML version
+      // HTML version only
       const htmlContent = markdownToHtml(doc.content, doc.filename);
       mainFolder.file(`${sanitizedFilename}.html`, htmlContent);
-
-      // Plain text version
-      const plainText = doc.content
-        .replace(/^#+\s*/gm, '') // Remove markdown headers
-        .replace(/\*\*/g, '') // Remove bold
-        .replace(/\*/g, '') // Remove italic
-        .replace(/\[(.*?)\]\(.*?\)/g, '$1'); // Remove links, keep text
-      mainFolder.file(`${sanitizedFilename}.txt`, plainText);
     });
 
     // Add README
@@ -244,21 +224,13 @@ export async function downloadAsZip(
 }
 
 /**
- * Downloads a single document
+ * Downloads a single document as HTML
  */
 export function downloadSingleDocument(doc: GeneratedDoc): void {
-  // Check if content is HTML
-  const isHtml = /<[a-z][\s\S]*>/i.test(doc.content);
   const sanitizedFilename = doc.filename.replace(/[^a-z0-9]/gi, '-').toLowerCase();
 
-  if (isHtml) {
-    // Wrap HTML content in full document structure
-    const fullHtml = markdownToHtml(doc.content, doc.filename);
-    const blob = new Blob([fullHtml], { type: 'text/html' });
-    saveAs(blob, `${sanitizedFilename}.html`);
-  } else {
-    // Save as Markdown
-    const blob = new Blob([doc.content], { type: 'text/markdown' });
-    saveAs(blob, `${sanitizedFilename}.md`);
-  }
+  // Always download as HTML with full document structure
+  const fullHtml = markdownToHtml(doc.content, doc.filename);
+  const blob = new Blob([fullHtml], { type: 'text/html' });
+  saveAs(blob, `${sanitizedFilename}.html`);
 }
