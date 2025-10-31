@@ -41,6 +41,11 @@ function App() {
   // Regenerate state
   const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
 
+  // Add more artifacts state
+  const [showAddMoreModal, setShowAddMoreModal] = useState(false);
+  const [additionalOutputs, setAdditionalOutputs] = useState<DocumentType[]>([]);
+  const [isGeneratingMore, setIsGeneratingMore] = useState(false);
+
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
     setError(null);
@@ -408,6 +413,100 @@ function App() {
       setTimeout(() => setShowToast(false), 3000);
     } finally {
       setRegeneratingIndex(null);
+    }
+  };
+
+  const handleAddMoreClick = () => {
+    setAdditionalOutputs([]);
+    setShowAddMoreModal(true);
+  };
+
+  const handleAdditionalOutputToggle = (outputId: DocumentType) => {
+    setAdditionalOutputs(prev =>
+      prev.includes(outputId)
+        ? prev.filter(id => id !== outputId)
+        : [...prev, outputId]
+    );
+  };
+
+  const getAlreadyGeneratedTypes = (): DocumentType[] => {
+    return generatedDocs.map(doc => doc.type);
+  };
+
+  const getAvailableTypes = (): DocumentType[] => {
+    const alreadyGenerated = getAlreadyGeneratedTypes();
+    return DOCUMENT_OPTIONS.map(opt => opt.id).filter(id => !alreadyGenerated.includes(id));
+  };
+
+  const handleGenerateAdditional = async () => {
+    if (additionalOutputs.length === 0) return;
+
+    setIsGeneratingMore(true);
+    setShowAddMoreModal(false);
+
+    try {
+      // Generate additional documents
+      const generationPromises = additionalOutputs.map(async (docType) => {
+        const startTime = Date.now();
+        try {
+          const content = await generateTrainingDocument(docType, sourceContent, (msg) => {
+            setProgressMessage(msg);
+          });
+
+          const duration = Date.now() - startTime;
+          return { type: docType, content, generatedAt: new Date(), durationMs: duration };
+        } catch (err: any) {
+          const duration = Date.now() - startTime;
+          return {
+            type: docType,
+            content: '',
+            error: err.message || 'Generation failed',
+            generatedAt: new Date(),
+            durationMs: duration
+          };
+        }
+      });
+
+      const results = await Promise.all(generationPromises);
+
+      // Convert to GeneratedDoc format
+      const newDocs: GeneratedDoc[] = results.map(result => {
+        const option = DOCUMENT_OPTIONS.find(o => o.id === result.type);
+        return {
+          filename: option?.label || result.type,
+          content: result.error
+            ? `# Error generating ${option?.label}\n\n${result.error}`
+            : result.content,
+          type: result.type,
+          format: 'markdown' as const,
+          generatedAt: result.generatedAt,
+          durationMs: result.durationMs,
+        };
+      });
+
+      // Add new docs to existing ones
+      setGeneratedDocs(prev => [...prev, ...newDocs]);
+
+      // Select new documents for download by default
+      const currentCount = generatedDocs.length;
+      setSelectedForDownload(prev => {
+        const newSet = new Set(prev);
+        newDocs.forEach((_, idx) => newSet.add(currentCount + idx));
+        return newSet;
+      });
+
+      setToastMessage(`✓ ${newDocs.length} additional document(s) generated!`);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+      setAdditionalOutputs([]);
+    } catch (error: any) {
+      console.error('Error generating additional documents:', error);
+      setToastMessage('✗ Failed to generate additional documents');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    } finally {
+      setIsGeneratingMore(false);
+      setProgressMessage('');
     }
   };
 
@@ -795,6 +894,20 @@ function App() {
                 </svg>
                 Download {selectedForDownload.size === generatedDocs.length ? 'All' : selectedForDownload.size} as ZIP
               </button>
+
+              {getAvailableTypes().length > 0 && (
+                <button
+                  className="btn-add-more"
+                  onClick={handleAddMoreClick}
+                  disabled={isGeneratingMore}
+                >
+                  <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  {isGeneratingMore ? 'Generating...' : 'Generate More Artifacts'}
+                </button>
+              )}
+
               <button className="btn-secondary" onClick={handleReset}>
                 Create New Project
               </button>
@@ -872,6 +985,74 @@ function App() {
               <span className="dot"></span>
               <span className="dot"></span>
               <span className="dot"></span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add More Artifacts Modal */}
+      {showAddMoreModal && (
+        <div className="modal-overlay" onClick={() => setShowAddMoreModal(false)}>
+          <div className="add-more-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Generate Additional Artifacts</h2>
+              <button className="modal-close" onClick={() => setShowAddMoreModal(false)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p className="modal-description">
+                Select the additional document types you'd like to generate from your source content:
+              </p>
+
+              <div className="output-options">
+                {getAvailableTypes().map(typeId => {
+                  const option = DOCUMENT_OPTIONS.find(o => o.id === typeId);
+                  if (!option) return null;
+
+                  return (
+                    <label key={option.id} className="output-option">
+                      <input
+                        type="checkbox"
+                        checked={additionalOutputs.includes(option.id)}
+                        onChange={() => handleAdditionalOutputToggle(option.id)}
+                      />
+                      <div className="option-content">
+                        <div className="option-header">
+                          <span className="option-icon">{option.icon}</span>
+                          <span className="option-label">{option.label}</span>
+                        </div>
+                        <span className="option-description">{option.description}</span>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+
+              {getAvailableTypes().length === 0 && (
+                <p className="no-options-message">
+                  ✓ All document types have been generated!
+                </p>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-modal-cancel" onClick={() => setShowAddMoreModal(false)}>
+                Cancel
+              </button>
+              <button
+                className="btn-modal-generate"
+                onClick={handleGenerateAdditional}
+                disabled={additionalOutputs.length === 0}
+              >
+                <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Generate {additionalOutputs.length > 0 ? additionalOutputs.length : ''} Document{additionalOutputs.length !== 1 ? 's' : ''}
+              </button>
             </div>
           </div>
         </div>
