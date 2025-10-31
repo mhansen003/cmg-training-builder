@@ -668,9 +668,9 @@
    ============================================ */
 .document-card-modern {
   background: white;
-  border-radius: 4px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e8eaed;
   overflow: hidden;
   transition: all 0.3s;
   display: flex;
@@ -679,12 +679,12 @@
 }
 
 .document-card-modern:hover {
-  box-shadow: 0 4px 20px rgba(155, 197, 61, 0.15);
-  border-color: #9bc53d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
 }
 
 .card-header {
-  background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%);
+  background: linear-gradient(135deg, #4a5f7a 0%, #5a6f8a 100%);
   padding: 1.5rem 2rem;
 }
 
@@ -697,54 +697,57 @@
 .download-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   cursor: pointer;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  transition: background 0.2s;
+  padding: 0.4rem 0.6rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  transition: all 0.2s;
   width: fit-content;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .download-checkbox:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .download-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  accent-color: #9bc53d;
+  accent-color: #8db33d;
 }
 
 .checkbox-label-small {
-  color: #9bc53d;
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
+  font-weight: 500;
   user-select: none;
+  letter-spacing: 0.3px;
 }
 
 .card-title {
   color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
 }
 
 .card-summary {
   padding: 1.5rem 2rem;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  background: #fafbfc;
+  border-bottom: 1px solid #f0f1f3;
   flex: 1;
   display: flex;
   align-items: center;
 }
 
 .card-summary p {
-  color: #5a6c7d;
-  font-size: 0.95rem;
-  line-height: 1.6;
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.65;
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
@@ -762,10 +765,10 @@
 
 .btn-card-action {
   border: none;
-  padding: 0.65rem 1.25rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.9rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.875rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -774,46 +777,48 @@
 }
 
 .btn-expand {
-  background: #e9ecef;
-  color: #2b3e50;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
 }
 
 .btn-expand:hover {
-  background: #d3d6da;
-  transform: translateY(-1px);
+  background: #e5e7eb;
+  border-color: #d1d5db;
 }
 
 .btn-edit {
-  background: #1ab4a8;
+  background: #10b981;
   color: white;
+  border: 1px solid transparent;
 }
 
 .btn-edit:hover {
-  background: #179089;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26, 180, 168, 0.3);
+  background: #059669;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
 }
 
 .btn-copy {
-  background: #2b3e50;
+  background: #6b7280;
   color: white;
+  border: 1px solid transparent;
 }
 
 .btn-copy:hover {
-  background: #1a2730;
-  transform: translateY(-1px);
+  background: #4b5563;
+  box-shadow: 0 2px 8px rgba(107, 114, 128, 0.2);
 }
 
 .btn-download-primary {
-  background: #9bc53d;
+  background: #84b33f;
   color: white;
   margin-left: auto;
+  border: 1px solid transparent;
 }
 
 .btn-download-primary:hover {
-  background: #8ab02f;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+  background: #6d9933;
+  box-shadow: 0 2px 8px rgba(132, 179, 63, 0.25);
 }
 
 .card-expanded-content {
