@@ -208,6 +208,122 @@
 }
 
 /* ============================================
+   TEXT INPUT SECTION
+   ============================================ */
+.text-input-section {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.text-input-header {
+  margin-bottom: 1.5rem;
+}
+
+.text-input-header h3 {
+  color: #2b3e50;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.text-input-header p {
+  color: #5a6c7d;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.content-textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 1.25rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #2b3e50;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.content-textarea:focus {
+  outline: none;
+  border-color: #9bc53d;
+  box-shadow: 0 0 0 3px rgba(155, 197, 61, 0.1);
+  background: #f8fff8;
+}
+
+.content-textarea::placeholder {
+  color: #95a5a6;
+  font-size: 0.95rem;
+}
+
+.text-input-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-enhance {
+  background: linear-gradient(135deg, #1ab4a8 0%, #16a094 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(26, 180, 168, 0.2);
+}
+
+.btn-enhance:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 180, 168, 0.3);
+}
+
+.btn-enhance:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-clear {
+  background: #e9ecef;
+  color: #2b3e50;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover {
+  background: #d3d6da;
+  transform: translateY(-1px);
+}
+
+.enhance-success {
+  color: #9bc53d;
+  font-weight: 600;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #e8f5e9;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ============================================
    OUTPUT OPTIONS
    ============================================ */
 .output-options {
@@ -327,10 +443,15 @@
   transition: all 0.2s;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: #8ab02f;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -386,6 +507,79 @@
   font-size: 1.1rem;
 }
 
+/* Progress Checklist */
+.progress-checklist {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.progress-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s;
+}
+
+.progress-item:last-child {
+  margin-bottom: 0;
+}
+
+.progress-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-complete {
+  width: 32px;
+  height: 32px;
+  color: #9bc53d;
+}
+
+.icon-pending {
+  width: 32px;
+  height: 32px;
+  color: #95a5a6;
+}
+
+.spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #1ab4a8;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.progress-label {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #2b3e50;
+}
+
+.progress-pending {
+  background: #f8f9fa;
+}
+
+.progress-processing {
+  background: #e8f5f9;
+  border-left: 4px solid #1ab4a8;
+}
+
+.progress-complete {
+  background: #e8f5e9;
+  border-left: 4px solid #9bc53d;
+}
+
 /* ============================================
    PREVIEW
    ============================================ */
@@ -395,6 +589,7 @@
 
 .document-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -456,6 +651,9 @@
   border: 2px solid #e9ecef;
   overflow: hidden;
   transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
 }
 
 .document-card-modern:hover {
@@ -466,6 +664,42 @@
 .card-header {
   background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%);
   padding: 1.5rem 2rem;
+}
+
+.card-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.download-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background 0.2s;
+  width: fit-content;
+}
+
+.download-checkbox:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.download-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #9bc53d;
+}
+
+.checkbox-label-small {
+  color: #9bc53d;
+  font-size: 0.85rem;
+  font-weight: 600;
+  user-select: none;
 }
 
 .card-title {
@@ -480,6 +714,9 @@
   padding: 1.5rem 2rem;
   background: #f8f9fa;
   border-bottom: 1px solid #e9ecef;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .card-summary p {
@@ -487,6 +724,10 @@
   font-size: 0.95rem;
   line-height: 1.6;
   margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .card-actions {
@@ -518,6 +759,17 @@
 .btn-expand:hover {
   background: #d3d6da;
   transform: translateY(-1px);
+}
+
+.btn-edit {
+  background: #1ab4a8;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #179089;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 180, 168, 0.3);
 }
 
 .btn-copy {

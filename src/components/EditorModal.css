@@ -1,0 +1,245 @@
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Container */
+.modal-container {
+  background: white;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e9ecef;
+  background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%);
+}
+
+.modal-header h2 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modal-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Modal Body */
+.modal-body {
+  flex: 1;
+  overflow: auto;
+  padding: 0;
+}
+
+/* Editor Toolbar */
+.editor-toolbar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  flex-wrap: wrap;
+}
+
+.toolbar-btn {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2b3e50;
+  transition: all 0.2s;
+  min-width: 40px;
+}
+
+.toolbar-btn:hover {
+  background: #e9ecef;
+  border-color: #9bc53d;
+}
+
+.toolbar-btn:active {
+  transform: translateY(1px);
+}
+
+.toolbar-divider {
+  width: 1px;
+  background: #dee2e6;
+  margin: 0 0.5rem;
+}
+
+/* WYSIWYG Editor */
+.wysiwyg-editor {
+  min-height: 400px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #2b3e50;
+  outline: none;
+}
+
+.wysiwyg-editor:focus {
+  background: #f8fff8;
+}
+
+.wysiwyg-editor h2 {
+  color: #2b3e50;
+  font-size: 1.75rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.wysiwyg-editor h3 {
+  color: #1ab4a8;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.wysiwyg-editor p {
+  margin-bottom: 1rem;
+}
+
+.wysiwyg-editor ul,
+.wysiwyg-editor ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.wysiwyg-editor li {
+  margin-bottom: 0.5rem;
+}
+
+.wysiwyg-editor strong {
+  font-weight: 600;
+  color: #2b3e50;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #e9ecef;
+  background: #f8f9fa;
+}
+
+.btn-modal-cancel {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-modal-cancel:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+.btn-modal-save {
+  background: #9bc53d;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-modal-save:hover {
+  background: #8ab02f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-container {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  .modal-header,
+  .modal-footer {
+    padding: 1rem;
+  }
+
+  .wysiwyg-editor {
+    padding: 1rem;
+    min-height: 300px;
+  }
+}
