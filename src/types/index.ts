@@ -3,6 +3,8 @@ export interface GeneratedDoc {
   content: string;
   type: DocumentType;
   format: 'markdown' | 'html' | 'txt';
+  generatedAt?: Date;
+  durationMs?: number;
 }
 
 export type DocumentType =

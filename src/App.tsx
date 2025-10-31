@@ -174,6 +174,7 @@ function App() {
 
       // Generate all documents in parallel for faster results
       const generationPromises = selectedOutputs.map(async (docType) => {
+        const startTime = Date.now();
         try {
           const content = await generateTrainingDocument(docType, combinedContent, (msg) => {
             setProgressMessage(msg);
@@ -182,15 +183,19 @@ function App() {
           // Mark this document as complete
           setGenerationProgress(prev => ({ ...prev, [docType]: 'complete' }));
 
-          return { type: docType, content };
+          const duration = Date.now() - startTime;
+          return { type: docType, content, generatedAt: new Date(), durationMs: duration };
         } catch (err: any) {
           // Mark as complete even on error
           setGenerationProgress(prev => ({ ...prev, [docType]: 'complete' }));
 
+          const duration = Date.now() - startTime;
           return {
             type: docType,
             content: '',
-            error: err.message || 'Generation failed'
+            error: err.message || 'Generation failed',
+            generatedAt: new Date(),
+            durationMs: duration
           };
         }
       });
@@ -208,6 +213,8 @@ function App() {
             : result.content,
           type: result.type,
           format: 'markdown' as const,
+          generatedAt: result.generatedAt,
+          durationMs: result.durationMs,
         };
       });
 
@@ -375,15 +382,19 @@ function App() {
       setRegeneratingIndex(index);
 
       // Regenerate this specific document
+      const startTime = Date.now();
       const newContent = await generateTrainingDocument(doc.type, sourceContent, (msg) => {
         console.log('Regenerating:', msg);
       });
+      const duration = Date.now() - startTime;
 
       // Update the document in the array
       const updatedDocs = [...generatedDocs];
       updatedDocs[index] = {
         ...updatedDocs[index],
         content: newContent,
+        generatedAt: new Date(),
+        durationMs: duration,
       };
       setGeneratedDocs(updatedDocs);
 
@@ -665,28 +676,29 @@ function App() {
                       </div>
                     )}
 
-                    {/* Card Header */}
+                    {/* Card Header - Simple */}
                     <div className="card-header">
-                      <div className="card-header-top">
-                        <div className="card-title-row">
-                          <span className="card-type-icon">{docOption?.icon}</span>
-                          <h3 className="card-title">{doc.filename}</h3>
-                        </div>
-                        <label className="header-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={selectedForDownload.has(index)}
-                            onChange={() => toggleDownloadSelection(index)}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className="checkbox-label-inline">Include in ZIP</span>
-                        </label>
-                      </div>
+                      <span className="card-type-icon">{docOption?.icon}</span>
+                      <h3 className="card-title">{doc.filename}</h3>
                     </div>
 
-                    {/* Card Summary */}
-                    <div className="card-summary">
-                      <p>{getSummary(doc.content)}</p>
+                    {/* Card Body */}
+                    <div className="card-body">
+                      {/* Content Preview */}
+                      <div className="card-preview">
+                        <p>{getSummary(doc.content)}</p>
+                      </div>
+
+                      {/* Include in ZIP Checkbox */}
+                      <label className="card-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={selectedForDownload.has(index)}
+                          onChange={() => toggleDownloadSelection(index)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <span>Include in ZIP download</span>
+                      </label>
                     </div>
 
                     {/* Card Actions */}
@@ -696,7 +708,7 @@ function App() {
                         onClick={() => handleOpenViewer(index)}
                         title="View full content"
                       >
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
@@ -708,44 +720,58 @@ function App() {
                         onClick={() => handleOpenEditor(index)}
                         title="Edit document"
                       >
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                         Edit
                       </button>
 
                       <button
-                        className="btn-card-action btn-regenerate"
-                        onClick={() => handleRegenerateArtifact(index)}
-                        title="Regenerate document with AI"
-                      >
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Regenerate
-                      </button>
-
-                      <button
                         className="btn-card-action btn-copy"
                         onClick={() => handleCopyHtml(doc)}
-                        title="Copy HTML"
+                        title="Copy HTML to clipboard"
                       >
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                        Copy HTML
+                        Copy
                       </button>
 
                       <button
                         className="btn-card-action btn-download"
                         onClick={() => handleDownloadSingle(doc)}
-                        title="Download"
+                        title="Download this file"
                       >
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         Download
                       </button>
+
+                      <button
+                        className="btn-card-action btn-regenerate btn-full-width"
+                        onClick={() => handleRegenerateArtifact(index)}
+                        title="Regenerate this document with AI"
+                      >
+                        <svg className="btn-icon-sm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Regenerate with AI
+                      </button>
+                    </div>
+
+                    {/* Card Footer */}
+                    <div className="card-footer">
+                      {doc.generatedAt && (
+                        <span className="footer-meta">
+                          Generated {new Date(doc.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      )}
+                      {doc.durationMs && (
+                        <span className="footer-meta">
+                          {(doc.durationMs / 1000).toFixed(1)}s
+                        </span>
+                      )}
                     </div>
                   </div>
                 );
