@@ -8,12 +8,7 @@ import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI } fro
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
 
-type AppStep = 'upload' | 'wizard' | 'processing' | 'preview';
-
-interface WizardQuestion {
-  question: string;
-  answer: string;
-}
+type AppStep = 'upload' | 'processing' | 'preview';
 
 function App() {
   const [step, setStep] = useState<AppStep>('upload');
@@ -32,9 +27,6 @@ function App() {
   const [selectedForDownload, setSelectedForDownload] = useState<Set<number>>(new Set());
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [wizardQuestions, setWizardQuestions] = useState<WizardQuestion[]>([]);
-  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
-  const [sourceContent, setSourceContent] = useState<string>('');
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
