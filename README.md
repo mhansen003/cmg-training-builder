@@ -2,6 +2,8 @@
 
 AI-powered training documentation generator for CMG Financial. Upload documents, specifications, or transcripts, and automatically generate professional training materials.
 
+🌐 **Live Application**: [https://trainbuilder.cmgfinancial.ai](https://trainbuilder.cmgfinancial.ai)
+
 ## 🚀 Features
 
 - **Drag & Drop File Upload** - Upload PDFs, Word docs, text files, and more
@@ -69,6 +71,8 @@ npm run dev
 \`\`\`
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+**Production URL**: [https://trainbuilder.cmgfinancial.ai](https://trainbuilder.cmgfinancial.ai)
 
 ## 🏗️ Building for Production
 
