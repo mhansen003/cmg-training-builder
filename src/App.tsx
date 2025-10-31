@@ -4,7 +4,7 @@ import FileUpload from './components/FileUpload';
 import EditorModal from './components/EditorModal';
 import { DOCUMENT_OPTIONS } from './config/documentOptions';
 import { processFiles } from './utils/fileProcessor';
-import { generateMultipleDocuments, generateTrainingDocument, enhanceTextWithAI } from './services/openai';
+import { generateTrainingDocument, enhanceTextWithAI } from './services/openai';
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
 
