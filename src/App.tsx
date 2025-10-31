@@ -285,25 +285,16 @@ function App() {
             {/* Quick Content Entry - Dark Theme on Top */}
             <div className="text-input-section-dark">
               <div className="text-input-header-dark">
-                <h2>Quick Content Entry</h2>
-                <p>Enter your content directly or paste notes, bullet points, or rough ideas. AI will transform them into professional communications.</p>
+                <h2>Describe Your Issue or Feature Request</h2>
+                <p>Drop documents, type your issue, or both. Our AI will extract the necessary information automatically.</p>
               </div>
 
               <textarea
                 className="content-textarea-dark"
-                placeholder="Enter your content here...
-
-Examples:
-• New feature launch for loan processing system
-• Improved appraisal ordering workflow
-• Updated pricing calculator with real-time rates
-• Training session on compliance procedures
-• Release of new mobile app features
-
-Or paste meeting notes, specifications, or any content you want to transform into professional communications."
+                placeholder="Paste or type your change request details here..."
                 value={manualText}
                 onChange={(e) => setManualText(e.target.value)}
-                rows={12}
+                rows={6}
               />
 
               {manualText.trim() && (
