@@ -35,7 +35,6 @@ function App() {
 
   // Wizard state
   const [wizardQuestions, setWizardQuestions] = useState<WizardQuestion[]>([]);
-  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
   const [sourceContent, setSourceContent] = useState<string>('');
 
   const handleFilesSelected = (newFiles: File[]) => {
@@ -98,7 +97,6 @@ function App() {
     }
 
     setError(null);
-    setIsGeneratingQuestions(true);
     setProgressMessage('Analyzing content...');
 
     try {
@@ -139,8 +137,7 @@ function App() {
     } catch (err: any) {
       console.error('Error during pre-generation:', err);
       setError(err.message || 'Failed to analyze content. Please try again.');
-    } finally {
-      setIsGeneratingQuestions(false);
+      setProgressMessage('');
     }
   };
 
