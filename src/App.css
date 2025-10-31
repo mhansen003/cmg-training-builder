@@ -127,6 +127,28 @@
   transform: translateY(-1px);
 }
 
+.btn-header-ado {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
+}
+
+.btn-header-ado:hover {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(14, 165, 233, 0.3);
+}
+
 .btn-icon {
   width: 18px;
   height: 18px;
@@ -1641,52 +1663,6 @@
     transform: translateY(0);
     opacity: 1;
   }
-}
-
-/* ============================================
-   ADO IMPORT SECTION
-   ============================================ */
-.ado-import-section {
-  text-align: center;
-  padding: 2rem;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border: 2px dashed #0ea5e9;
-  border-radius: 12px;
-  margin: 1.5rem 0;
-}
-
-.ado-import-trigger-btn {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2);
-}
-
-.ado-import-trigger-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(14, 165, 233, 0.3);
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-}
-
-.ado-import-trigger-btn .btn-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.ado-import-hint {
-  margin-top: 0.75rem;
-  color: #0369a1;
-  font-size: 0.875rem;
-  font-weight: 500;
 }
 
 /* ============================================

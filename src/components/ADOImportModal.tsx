@@ -225,43 +225,61 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                   <p>No work items found. Try adjusting your search criteria.</p>
                 </div>
               ) : (
-                searchResults.map((workItem) => (
-                  <div
-                    key={workItem.id}
-                    className={`ado-work-item ${selectedIds.has(workItem.id) ? 'selected' : ''}`}
-                    onClick={() => toggleSelection(workItem.id)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedIds.has(workItem.id)}
-                      onChange={() => toggleSelection(workItem.id)}
-                      className="ado-work-item-checkbox"
-                    />
-                    <div className="ado-work-item-content">
-                      <div className="ado-work-item-header">
-                        <span className="ado-work-item-id">#{workItem.id}</span>
-                        {workItem.fields['System.TeamProject'] && (
-                          <span className="ado-work-item-project">
-                            {workItem.fields['System.TeamProject']}
+                searchResults.map((workItem) => {
+                  const description = workItem.fields['System.Description'] || '';
+                  const strippedDescription = description.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+                  const descriptionPreview = strippedDescription.length > 150
+                    ? strippedDescription.substring(0, 150) + '...'
+                    : strippedDescription;
+
+                  return (
+                    <div
+                      key={workItem.id}
+                      className={`ado-work-item ${selectedIds.has(workItem.id) ? 'selected' : ''}`}
+                      onClick={() => toggleSelection(workItem.id)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(workItem.id)}
+                        onChange={() => toggleSelection(workItem.id)}
+                        className="ado-work-item-checkbox"
+                      />
+                      <div className="ado-work-item-content">
+                        <div className="ado-work-item-header">
+                          <span className="ado-work-item-id">#{workItem.id}</span>
+                          {workItem.fields['System.TeamProject'] && (
+                            <span className="ado-work-item-project">
+                              {workItem.fields['System.TeamProject']}
+                            </span>
+                          )}
+                          <span className={`ado-work-item-state state-${workItem.fields['System.State'].toLowerCase().replace(/\s+/g, '-')}`}>
+                            {workItem.fields['System.State']}
                           </span>
-                        )}
-                        <span className={`ado-work-item-state state-${workItem.fields['System.State'].toLowerCase().replace(/\s+/g, '-')}`}>
-                          {workItem.fields['System.State']}
-                        </span>
-                      </div>
-                      <h4 className="ado-work-item-title">
-                        {workItem.fields['System.Title']}
-                      </h4>
-                      {workItem.fields['System.Tags'] && (
-                        <div className="ado-work-item-tags">
-                          {workItem.fields['System.Tags'].split(';').map((tag: string, idx: number) => (
-                            <span key={idx} className="ado-tag">{tag.trim()}</span>
-                          ))}
+                          {workItem.fields['System.IterationPath'] && (
+                            <span className="ado-work-item-iteration">
+                              📅 {workItem.fields['System.IterationPath'].split('\\').pop()}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        <h4 className="ado-work-item-title">
+                          {workItem.fields['System.Title']}
+                        </h4>
+                        {descriptionPreview && (
+                          <p className="ado-work-item-description">
+                            {descriptionPreview}
+                          </p>
+                        )}
+                        {workItem.fields['System.Tags'] && (
+                          <div className="ado-work-item-tags">
+                            {workItem.fields['System.Tags'].split(';').map((tag: string, idx: number) => (
+                              <span key={idx} className="ado-tag">{tag.trim()}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
