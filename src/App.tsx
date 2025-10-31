@@ -449,10 +449,7 @@ function App() {
             </div>
 
             <div className="document-grid">
-              {generatedDocs.map((doc, index) => {
-                const isHtml = /<[a-z][\s\S]*>/i.test(doc.content);
-
-                return (
+              {generatedDocs.map((doc, index) => (
                   <div key={index} className="document-card-modern">
                     {/* Card Header */}
                     <div className="card-header">
@@ -521,8 +518,7 @@ function App() {
                       </button>
                     </div>
                   </div>
-                );
-              })}
+              ))}
             </div>
 
             {progressMessage && (
