@@ -150,19 +150,9 @@ function App() {
               <span className="logo-financial">FINANCIAL</span>
             </div>
             <div className="header-divider"></div>
-            <h1 className="header-title">Training Builder</h1>
+            <h1 className="header-title">Communications Builder</h1>
           </div>
           <div className="header-right">
-            <div className="header-phone-section">
-              <svg className="phone-icon-header" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span className="phone-label-header">Need help?</span>
-              <a href="tel:+19495233372" className="phone-number-header">
-                949-523-3372
-              </a>
-            </div>
-            <div className="header-divider"></div>
             <button className="btn-header" onClick={handleReset}>
               <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -183,10 +173,10 @@ function App() {
         {step === 'upload' && (
           <div className="upload-section">
             <div className="section-header">
-              <h2>Create Training Documentation with AI</h2>
+              <h2>Create Communications with AI</h2>
               <p>
                 Upload your documents, transcripts, or specifications, and let AI generate
-                professional training materials automatically.
+                professional communications automatically.
               </p>
             </div>
 
@@ -201,7 +191,7 @@ function App() {
             </div>
 
             <div className="output-options">
-              <h3>📝 Training Documents to Generate</h3>
+              <h3>📝 Communications to Generate</h3>
               <div className="checkbox-grid">
                 {DOCUMENT_OPTIONS.map(option => (
                   <label key={option.id} className="checkbox-card">
@@ -228,7 +218,7 @@ function App() {
                 <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Generate Training Documents with AI
+                Generate Communications with AI
               </button>
             </div>
           </div>
@@ -237,8 +227,8 @@ function App() {
         {step === 'processing' && (
           <div className="processing-section">
             <div className="spinner"></div>
-            <h2>Generating Your Training Documents...</h2>
-            <p>Our AI is analyzing your content and creating professional documentation.</p>
+            <h2>Generating Your Communications...</h2>
+            <p>Our AI is analyzing your content and creating professional communications.</p>
             {progressMessage && (
               <p style={{ marginTop: '1rem', color: '#9bc53d', fontWeight: 600 }}>
                 {progressMessage}
@@ -251,7 +241,7 @@ function App() {
           <div className="preview-section">
             <div className="section-header">
               <h2>✓ Documents Generated Successfully!</h2>
-              <p>Review your generated training materials below.</p>
+              <p>Review your generated communications below.</p>
             </div>
 
             <div className="document-grid">
@@ -360,7 +350,7 @@ function App() {
               <span className="logo-financial">FINANCIAL</span>
             </div>
             <p style={{ fontSize: '0.85rem', lineHeight: '1.6', marginTop: '0.5rem' }}>
-              Training Builder
+              Communications Builder
               <br />
               Powered by AI
             </p>
@@ -385,7 +375,7 @@ function App() {
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} CMG Financial. All rights reserved. | NMLS# 1820</p>
           <p style={{ marginTop: '0.5rem' }}>
-            AI-powered Training Documentation Builder
+            AI-powered Communications Builder
           </p>
         </div>
       </footer>
