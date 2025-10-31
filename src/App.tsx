@@ -25,6 +25,8 @@ function App() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [generationProgress, setGenerationProgress] = useState<Record<string, 'pending' | 'processing' | 'complete'>>({});
   const [selectedForDownload, setSelectedForDownload] = useState<Set<number>>(new Set());
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -214,10 +216,13 @@ function App() {
   const handleCopyHtml = async (doc: GeneratedDoc) => {
     try {
       await navigator.clipboard.writeText(doc.content);
-      setProgressMessage('✓ HTML copied to clipboard!');
-      setTimeout(() => setProgressMessage(''), 3000);
+      setToastMessage('✓ HTML copied to clipboard!');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     } catch (err: any) {
-      setError('Failed to copy to clipboard');
+      setToastMessage('✗ Failed to copy to clipboard');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
@@ -451,18 +456,16 @@ function App() {
                   <div key={index} className="document-card-modern">
                     {/* Card Header */}
                     <div className="card-header">
-                      <div className="card-header-content">
-                        <label className="download-checkbox">
-                          <input
-                            type="checkbox"
-                            checked={selectedForDownload.has(index)}
-                            onChange={() => toggleDownloadSelection(index)}
-                            onClick={(e) => e.stopPropagation()}
-                          />
-                          <span className="checkbox-label-small">Include in ZIP</span>
-                        </label>
-                        <h3 className="card-title">{doc.filename}</h3>
-                      </div>
+                      <label className="header-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={selectedForDownload.has(index)}
+                          onChange={() => toggleDownloadSelection(index)}
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                        <span className="checkbox-label-inline">Include in ZIP</span>
+                      </label>
+                      <h3 className="card-title">{doc.filename}</h3>
                     </div>
 
                     {/* Card Summary */}
@@ -473,9 +476,9 @@ function App() {
                     {/* Card Actions */}
                     <div className="card-actions">
                       <button
-                        className="btn-card-action btn-expand"
+                        className="btn-card-action btn-view"
                         onClick={() => handleOpenViewer(index)}
-                        title="View full content in modal"
+                        title="View full content"
                       >
                         <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -487,7 +490,7 @@ function App() {
                       <button
                         className="btn-card-action btn-edit"
                         onClick={() => handleOpenEditor(index)}
-                        title="Edit this document"
+                        title="Edit document"
                       >
                         <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -495,23 +498,21 @@ function App() {
                         Edit
                       </button>
 
-                      {isHtml && (
-                        <button
-                          className="btn-card-action btn-copy"
-                          onClick={() => handleCopyHtml(doc)}
-                          title="Copy HTML to clipboard"
-                        >
-                          <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                          Copy HTML
-                        </button>
-                      )}
+                      <button
+                        className="btn-card-action btn-copy"
+                        onClick={() => handleCopyHtml(doc)}
+                        title="Copy HTML"
+                      >
+                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy HTML
+                      </button>
 
                       <button
-                        className="btn-card-action btn-download-primary"
+                        className="btn-card-action btn-download"
                         onClick={() => handleDownloadSingle(doc)}
-                        title="Download this document"
+                        title="Download"
                       >
                         <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -605,6 +606,13 @@ function App() {
         onSave={handleSaveEdit}
         title={editingIndex !== null ? generatedDocs[editingIndex].filename : ''}
       />
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="toast">
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 }

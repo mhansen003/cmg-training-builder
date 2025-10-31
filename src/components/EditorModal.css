@@ -25,9 +25,9 @@
 /* Modal Container */
 .modal-container {
   background: white;
-  width: 90%;
-  max-width: 1000px;
-  max-height: 90vh;
+  width: 95%;
+  max-width: 1400px;
+  max-height: 95vh;
   border-radius: 8px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   display: flex;
