@@ -24,8 +24,19 @@ export default function EditorModal({ isOpen, onClose, content, onSave, title, r
   useEffect(() => {
     const handleSelectionChange = () => {
       const selection = window.getSelection();
-      const hasText = selection && selection.toString().trim().length > 0;
-      setHasSelection(!!hasText);
+      if (!selection || !editorRef.current) {
+        setHasSelection(false);
+        return;
+      }
+
+      // Only update if the selection is within the editor
+      const isWithinEditor = editorRef.current.contains(selection.anchorNode);
+      if (isWithinEditor) {
+        const hasText = selection.toString().trim().length > 0;
+        setHasSelection(hasText);
+      } else {
+        setHasSelection(false);
+      }
     };
 
     document.addEventListener('selectionchange', handleSelectionChange);

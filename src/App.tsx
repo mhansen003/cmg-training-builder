@@ -4,11 +4,16 @@ import FileUpload from './components/FileUpload';
 import EditorModal from './components/EditorModal';
 import { DOCUMENT_OPTIONS } from './config/documentOptions';
 import { processFiles } from './utils/fileProcessor';
-import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI } from './services/openai';
+import { generateTrainingDocument, enhanceTextWithAI, cleanupContentWithAI, generateClarifyingQuestions, categorizeFeatures } from './services/openai';
 import { downloadAsZip, downloadSingleDocument } from './utils/zipGenerator';
 import type { GeneratedDoc, DocumentType } from './types';
 
-type AppStep = 'upload' | 'processing' | 'preview';
+type AppStep = 'upload' | 'wizard' | 'processing' | 'preview';
+
+interface WizardQuestion {
+  question: string;
+  answer: string;
+}
 
 function App() {
   const [step, setStep] = useState<AppStep>('upload');
@@ -27,6 +32,11 @@ function App() {
   const [selectedForDownload, setSelectedForDownload] = useState<Set<number>>(new Set());
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+
+  // Wizard state
+  const [wizardQuestions, setWizardQuestions] = useState<WizardQuestion[]>([]);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [sourceContent, setSourceContent] = useState<string>('');
 
   const handleFilesSelected = (newFiles: File[]) => {
     setFiles(newFiles);
@@ -88,8 +98,56 @@ function App() {
     }
 
     setError(null);
+    setIsGeneratingQuestions(true);
+    setProgressMessage('Analyzing content...');
+
+    try {
+      // Get content from either files or manual text
+      let combinedContent: string;
+
+      if (files.length > 0) {
+        const { combinedContent: fileContent } = await processFiles(files);
+        combinedContent = fileContent;
+      } else {
+        combinedContent = manualText;
+      }
+
+      // Categorize features if multiple exist
+      setProgressMessage('Detecting and categorizing features...');
+      const { hasMultipleFeatures, categorizedContent } = await categorizeFeatures(combinedContent);
+
+      if (hasMultipleFeatures) {
+        setProgressMessage('Multiple features detected! Organizing content...');
+      }
+
+      // Store the categorized content
+      setSourceContent(categorizedContent);
+
+      // Generate clarifying questions based on categorized content
+      setProgressMessage('Generating clarifying questions...');
+      const questions = await generateClarifyingQuestions(categorizedContent, selectedOutputs);
+
+      if (questions.length > 0) {
+        // If there are questions, show the wizard
+        setWizardQuestions(questions.map(q => ({ question: q, answer: '' })));
+        setStep('wizard');
+        setProgressMessage('');
+      } else {
+        // No questions needed, proceed directly to generation
+        await proceedWithGeneration(combinedContent);
+      }
+    } catch (err: any) {
+      console.error('Error during pre-generation:', err);
+      setError(err.message || 'Failed to analyze content. Please try again.');
+    } finally {
+      setIsGeneratingQuestions(false);
+    }
+  };
+
+  const proceedWithGeneration = async (combinedContent: string) => {
+    setError(null);
     setStep('processing');
-    setProgressMessage('Processing content...');
+    setProgressMessage('Generating documents with AI...');
 
     // Initialize progress tracking
     const initialProgress: Record<string, 'pending' | 'processing' | 'complete'> = {};
@@ -99,18 +157,6 @@ function App() {
     setGenerationProgress(initialProgress);
 
     try {
-      // Get content from either files or manual text
-      let combinedContent: string;
-
-      if (files.length > 0) {
-        const { combinedContent: fileContent } = await processFiles(files);
-        combinedContent = fileContent;
-        setProgressMessage('Files processed. Generating documents with AI...');
-      } else {
-        combinedContent = manualText;
-        setProgressMessage('Content ready. Generating documents with AI...');
-      }
-
       // Mark all documents as processing and generate in parallel
       const processingProgress: Record<string, 'pending' | 'processing' | 'complete'> = {};
       selectedOutputs.forEach(type => {
@@ -169,6 +215,32 @@ function App() {
     }
   };
 
+  const handleWizardAnswerChange = (index: number, answer: string) => {
+    const updatedQuestions = [...wizardQuestions];
+    updatedQuestions[index].answer = answer;
+    setWizardQuestions(updatedQuestions);
+  };
+
+  const handleSkipWizard = async () => {
+    // Proceed with original content
+    await proceedWithGeneration(sourceContent);
+  };
+
+  const handleWizardContinue = async () => {
+    // Append answers to source content
+    const answeredQuestions = wizardQuestions.filter(q => q.answer.trim());
+    let enhancedContent = sourceContent;
+
+    if (answeredQuestions.length > 0) {
+      enhancedContent += '\n\n## Additional Context\n\n';
+      answeredQuestions.forEach(q => {
+        enhancedContent += `**${q.question}**\n${q.answer}\n\n`;
+      });
+    }
+
+    await proceedWithGeneration(enhancedContent);
+  };
+
   const handleReset = () => {
     setStep('upload');
     setFiles([]);
@@ -183,6 +255,8 @@ function App() {
     setEditingIndex(null);
     setIsViewerOpen(false);
     setIsEditorOpen(false);
+    setWizardQuestions([]);
+    setSourceContent('');
   };
 
   const handleRemoveFile = (index: number) => {
@@ -430,6 +504,53 @@ function App() {
           </div>
         )}
 
+        {step === 'wizard' && (
+          <div className="wizard-section">
+            <div className="wizard-container">
+              <div className="wizard-header">
+                <h2>✨ Help Us Create Better Documents</h2>
+                <p>We've identified a few questions that could help improve your communications. Answering these is optional—you can skip this step if you prefer.</p>
+              </div>
+
+              <div className="wizard-questions">
+                {wizardQuestions.map((q, index) => (
+                  <div key={index} className="wizard-question">
+                    <label className="question-label">
+                      <span className="question-number">{index + 1}</span>
+                      <span className="question-text">{q.question}</span>
+                    </label>
+                    <textarea
+                      className="question-input"
+                      placeholder="Your answer (optional)..."
+                      value={q.answer}
+                      onChange={(e) => handleWizardAnswerChange(index, e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div className="wizard-actions">
+                <button
+                  className="btn-wizard-skip"
+                  onClick={handleSkipWizard}
+                >
+                  Skip Questions
+                </button>
+                <button
+                  className="btn-wizard-continue"
+                  onClick={handleWizardContinue}
+                >
+                  <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Continue to Generate
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {step === 'processing' && (
           <div className="processing-section">
             <div className="spinner"></div>
@@ -493,20 +614,27 @@ function App() {
             </div>
 
             <div className="document-grid">
-              {generatedDocs.map((doc, index) => (
+              {generatedDocs.map((doc, index) => {
+                const docOption = DOCUMENT_OPTIONS.find(o => o.id === doc.type);
+                return (
                   <div key={index} className="document-card-modern">
                     {/* Card Header */}
                     <div className="card-header">
-                      <label className="header-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={selectedForDownload.has(index)}
-                          onChange={() => toggleDownloadSelection(index)}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                        <span className="checkbox-label-inline">Include in ZIP</span>
-                      </label>
-                      <h3 className="card-title">{doc.filename}</h3>
+                      <div className="card-header-top">
+                        <div className="card-title-row">
+                          <span className="card-type-icon">{docOption?.icon}</span>
+                          <h3 className="card-title">{doc.filename}</h3>
+                        </div>
+                        <label className="header-checkbox">
+                          <input
+                            type="checkbox"
+                            checked={selectedForDownload.has(index)}
+                            onChange={() => toggleDownloadSelection(index)}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                          <span className="checkbox-label-inline">Include in ZIP</span>
+                        </label>
+                      </div>
                     </div>
 
                     {/* Card Summary */}
@@ -562,7 +690,8 @@ function App() {
                       </button>
                     </div>
                   </div>
-              ))}
+                );
+              })}
             </div>
 
             {progressMessage && (

@@ -572,6 +572,159 @@
 }
 
 /* ============================================
+   WIZARD
+   ============================================ */
+.wizard-section {
+  padding: 3rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.wizard-container {
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.wizard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.wizard-header h2 {
+  color: #2b3e50;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.wizard-header p {
+  color: #5a6c7d;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.wizard-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.wizard-question {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #1ab4a8;
+}
+
+.question-label {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.question-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #1ab4a8 0%, #17a89a 100%);
+  color: white;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.question-text {
+  color: #2b3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  padding-top: 0.25rem;
+}
+
+.question-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+  background: white;
+}
+
+.question-input:focus {
+  outline: none;
+  border-color: #1ab4a8;
+  box-shadow: 0 0 0 3px rgba(26, 180, 168, 0.1);
+}
+
+.question-input::placeholder {
+  color: #adb5bd;
+}
+
+.wizard-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e9ecef;
+}
+
+.btn-wizard-skip {
+  padding: 0.875rem 2rem;
+  background: white;
+  color: #5a6c7d;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-wizard-skip:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.btn-wizard-continue {
+  padding: 0.875rem 2.5rem;
+  background: linear-gradient(135deg, #9bc53d 0%, #8ab02d 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.btn-wizard-continue:hover {
+  background: linear-gradient(135deg, #8ab02d 0%, #7a9f25 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(155, 197, 61, 0.4);
+}
+
+.btn-wizard-continue .btn-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
    PROCESSING
    ============================================ */
 .processing-section {
@@ -792,9 +945,26 @@
 .card-header {
   background: linear-gradient(135deg, #5a6f8a 0%, #6a7f9a 100%);
   padding: 1.25rem 1.5rem;
+}
+
+.card-header-top {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.card-type-icon {
+  font-size: 1.75rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .header-checkbox {
@@ -802,7 +972,8 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
-  width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .header-checkbox input[type="checkbox"] {
@@ -825,6 +996,7 @@
   font-weight: 600;
   margin: 0;
   letter-spacing: -0.3px;
+  line-height: 1.4;
 }
 
 .card-summary {
@@ -849,27 +1021,27 @@
 
 .card-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
   background: white;
 }
 
 .btn-card-action {
   border: none;
-  padding: 0.6rem 0.75rem;
+  padding: 0.75rem 1rem;
   border-radius: 6px;
   font-weight: 500;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.5rem;
   transition: all 0.2s;
   white-space: nowrap;
-  min-height: 38px; /* Ensures consistent height */
-  overflow: visible; /* Allows content to be visible */
+  min-height: 42px;
+  overflow: visible;
 }
 
 .btn-view {

@@ -1026,6 +1026,190 @@ Transform this into clear, professional content with proper structure, context, 
 }
 
 /**
+ * Analyzes content to detect and categorize multiple features
+ */
+export async function categorizeFeatures(
+  sourceContent: string
+): Promise<{ hasMultipleFeatures: boolean; categorizedContent: string }> {
+  try {
+    const client = createClient();
+
+    const systemPrompt = `You are an expert content analyzer at CMG Financial.
+
+Your task is to analyze source material and determine if it contains MULTIPLE distinct features or just a single feature.
+
+GUIDELINES FOR MULTIPLE FEATURES:
+- Look for multiple separate features, updates, or changes
+- Each feature should be a distinct piece of functionality or improvement
+- Features can be related but should be independently described
+- Minor variations of the same feature don't count as multiple features
+
+IF MULTIPLE FEATURES DETECTED:
+- Categorize them into logical groups (e.g., "Pricing Features", "Workflow Improvements", "System Updates", "User Interface Changes")
+- Format the output as structured markdown with clear categories
+- Include all relevant details for each feature
+
+IF SINGLE FEATURE:
+- Return the original content unchanged
+
+OUTPUT FORMAT (if multiple features):
+## [Category Name 1]
+
+### [Feature Name]
+[Feature description and details]
+
+### [Feature Name]
+[Feature description and details]
+
+## [Category Name 2]
+
+### [Feature Name]
+[Feature description and details]
+
+CRITICAL: Return a JSON object with two properties:
+{
+  "hasMultipleFeatures": true/false,
+  "categorizedContent": "the organized content or original content"
+}`;
+
+    const userPrompt = `Analyze this content and determine if it contains multiple distinct features. If yes, categorize them. If no, return the content unchanged:
+
+CONTENT:
+${sourceContent}
+
+Return JSON only.`;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4-turbo-preview',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.3,
+      max_tokens: 2000,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      return { hasMultipleFeatures: false, categorizedContent: sourceContent };
+    }
+
+    try {
+      const result = JSON.parse(content.trim());
+      return {
+        hasMultipleFeatures: result.hasMultipleFeatures || false,
+        categorizedContent: result.categorizedContent || sourceContent,
+      };
+    } catch (parseError) {
+      console.error('Failed to parse categorization JSON:', content);
+      return { hasMultipleFeatures: false, categorizedContent: sourceContent };
+    }
+  } catch (error: any) {
+    console.error('Error categorizing features:', error);
+    return { hasMultipleFeatures: false, categorizedContent: sourceContent };
+  }
+}
+
+/**
+ * Generates clarifying questions based on source content and selected output types
+ */
+export async function generateClarifyingQuestions(
+  sourceContent: string,
+  outputTypes: DocumentType[]
+): Promise<string[]> {
+  try {
+    const client = createClient();
+
+    const outputTypeLabels = outputTypes.map(type => {
+      const labels: Record<DocumentType, string> = {
+        'release-notes': 'Release Notes',
+        'training-guide': 'Training Guide',
+        'email': 'Email Announcement',
+        'quick-ref': 'Quick Reference Card',
+        'faq': 'FAQ Document',
+        'manual': 'User Manual',
+        'tech-guide': 'App Support Technical Guide',
+      };
+      return labels[type];
+    }).join(', ');
+
+    const systemPrompt = `You are an expert content strategist at CMG Financial.
+
+Your task is to review source material and identify what critical information is MISSING or UNCLEAR that would help create better ${outputTypeLabels}.
+
+GUIDELINES:
+- Identify gaps in the information (e.g., missing dates, target audience, specific steps, expected outcomes)
+- Focus on questions that would significantly improve the documentation quality
+- Ask about context that isn't clear from the source material
+- Consider what support teams, users, or stakeholders would need to know
+- Prioritize questions that apply to multiple document types being generated
+
+QUESTION TYPES TO CONSIDER:
+- Timing: When does this take effect? Rollout timeline?
+- Audience: Who is affected? Which roles or departments?
+- Context: Why is this change happening? What problem does it solve?
+- Details: Are there any prerequisites? System requirements?
+- Impact: What workflows change? What stays the same?
+- Support: Known issues? Who to contact for help?
+
+CRITICAL RULES:
+- Generate ONLY 1-3 questions maximum (prefer 2-3 if information is sparse, 1 if mostly complete)
+- If the source content is already comprehensive, generate 0 questions (return empty array)
+- Make questions specific and actionable
+- Each question should be clear and concise
+- Don't ask questions if the answer is already in the source material
+- Focus on HIGH-VALUE information gaps only
+
+OUTPUT FORMAT:
+Return a JSON array of question strings, or empty array if no questions are needed.
+Example: ["When will this feature be released to production?", "Which user roles will have access to this feature?"]
+
+CRITICAL: Return ONLY the JSON array. No explanations, no preamble, no meta-text. Just the array.`;
+
+    const userPrompt = `Review this source material and generate 1-3 clarifying questions (or 0 if content is comprehensive):
+
+SOURCE MATERIAL:
+${sourceContent}
+
+DOCUMENT TYPES TO GENERATE:
+${outputTypeLabels}
+
+What critical information is missing or unclear? Return JSON array of questions.`;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4-turbo-preview',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 500,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      throw new Error('No content generated from AI');
+    }
+
+    // Parse the JSON array
+    try {
+      const questions = JSON.parse(content.trim());
+      if (Array.isArray(questions)) {
+        return questions.slice(0, 3); // Ensure max 3 questions
+      }
+      return [];
+    } catch (parseError) {
+      console.error('Failed to parse questions JSON:', content);
+      return [];
+    }
+  } catch (error: any) {
+    console.error('Error generating clarifying questions:', error);
+    // If question generation fails, just return empty array - don't block the workflow
+    return [];
+  }
+}
+
+/**
  * Cleans up and polishes HTML content with AI
  */
 export async function cleanupContentWithAI(
