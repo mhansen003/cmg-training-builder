@@ -739,6 +739,71 @@
   margin: 0;
 }
 
+/* Modal output options styling */
+.add-more-modal .output-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.add-more-modal .output-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-more-modal .output-option:hover {
+  background: #f3f4f6;
+  border-color: #667eea;
+}
+
+.add-more-modal .output-option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: #667eea;
+  flex-shrink: 0;
+}
+
+.add-more-modal .option-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.add-more-modal .option-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.add-more-modal .option-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.add-more-modal .option-label {
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.add-more-modal .option-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-top: 0.125rem;
+}
+
 .add-more-modal .modal-footer {
   padding: 1.25rem 2rem;
   border-top: 1px solid #e5e7eb;
