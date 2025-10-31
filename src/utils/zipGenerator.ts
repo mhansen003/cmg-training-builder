@@ -125,7 +125,7 @@ function markdownToHtml(content: string, title: string): string {
   </div>
 
   <div class="content">
-    <p>${html}</p>
+    <p>${htmlContent}</p>
   </div>
 
   <div class="footer">
