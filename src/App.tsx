@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './App.css';
+import FileUpload from './components/FileUpload';
 import { DOCUMENT_OPTIONS } from './config/documentOptions';
 import { processFiles } from './utils/fileProcessor';
 import { generateMultipleDocuments } from './services/openai';
@@ -16,11 +17,9 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [progressMessage, setProgressMessage] = useState<string>('');
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFiles(Array.from(e.target.files));
-      setError(null);
-    }
+  const handleFilesSelected = (newFiles: File[]) => {
+    setFiles(newFiles);
+    setError(null);
   };
 
   const handleOutputToggle = (outputId: DocumentType) => {
@@ -162,46 +161,11 @@ function App() {
               </p>
             </div>
 
-            <div className="file-upload-container">
-              <label htmlFor="file-input" className="file-upload-zone">
-                <svg className="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <h3>Drop files here or click to browse</h3>
-                <p>Supported: PDF, DOCX, TXT, Excel, Images</p>
-                <input
-                  id="file-input"
-                  type="file"
-                  multiple
-                  onChange={handleFileSelect}
-                  accept=".pdf,.docx,.txt,.xlsx,.xls,.png,.jpg,.jpeg"
-                  style={{ display: 'none' }}
-                />
-              </label>
-            </div>
-
-            {files.length > 0 && (
-              <div className="file-list">
-                <h3>📎 Uploaded Files ({files.length})</h3>
-                <div className="file-items">
-                  {files.map((file, index) => (
-                    <div key={index} className="file-item">
-                      <div className="file-info">
-                        <span className="file-name">{file.name}</span>
-                        <span className="file-size">{(file.size / 1024).toFixed(1)} KB</span>
-                      </div>
-                      <button
-                        className="btn-remove"
-                        onClick={() => handleRemoveFile(index)}
-                        aria-label="Remove file"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <FileUpload
+              files={files}
+              onFilesSelected={handleFilesSelected}
+              onRemoveFile={handleRemoveFile}
+            />
 
             <div className="divider">
               <span>SELECT OUTPUT TYPES</span>
