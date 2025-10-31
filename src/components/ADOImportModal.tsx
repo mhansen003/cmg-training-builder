@@ -10,7 +10,7 @@ interface ADOImportModalProps {
 
 export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportModalProps) {
   const [searchText, setSearchText] = useState('');
-  const [workItemType, setWorkItemType] = useState('User Story');
+  const [workItemType, setWorkItemType] = useState('All Types');
   const [state, setState] = useState('');
   const [project, setProject] = useState('All Projects');
   const [isSearching, setIsSearching] = useState(false);
@@ -22,13 +22,13 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   useEffect(() => {
     if (isOpen) {
       setSearchText('');
+      setWorkItemType('All Types');
       setState('');
       setProject('All Projects');
       setSearchResults([]);
       setSelectedIds(new Set());
       setError(null);
-      // Auto-search on open to show recent items
-      handleSearch('');
+      // Don't auto-search - wait for user to click Search button
     }
   }, [isOpen]);
 
@@ -41,7 +41,7 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
 
       const result = await searchADOWorkItems({
         searchText: query.trim() || undefined,
-        workItemType,
+        workItemType: workItemType === 'All Types' ? undefined : workItemType,
         state: state || undefined,
         project,
         maxResults: 50
@@ -165,10 +165,12 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                   onChange={(e) => setWorkItemType(e.target.value)}
                   className="ado-filter-select"
                 >
+                  <option value="All Types">All Types</option>
                   <option value="User Story">User Story</option>
                   <option value="Bug">Bug</option>
                   <option value="Task">Task</option>
                   <option value="Feature">Feature</option>
+                  <option value="Epic">Epic</option>
                 </select>
               </div>
 

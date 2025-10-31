@@ -32,7 +32,7 @@ export default async function handler(
   try {
     const {
       searchText,
-      workItemType = 'User Story',
+      workItemType,
       state,
       project,
       maxResults = 50
@@ -49,9 +49,12 @@ export default async function handler(
     }
 
     // Build WIQL query
-    const conditions: string[] = [
-      `[System.WorkItemType] = '${workItemType}'`
-    ];
+    const conditions: string[] = [];
+
+    // Add work item type filter only if specified
+    if (workItemType) {
+      conditions.push(`[System.WorkItemType] = '${workItemType}'`);
+    }
 
     // Add project filter only if specified
     if (project && project !== 'All Projects') {
@@ -66,10 +69,13 @@ export default async function handler(
       conditions.push(`[System.State] = '${state}'`);
     }
 
+    // Build WHERE clause only if there are conditions
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
     const wiql = `
       SELECT [System.Id]
       FROM WorkItems
-      WHERE ${conditions.join(' AND ')}
+      ${whereClause}
       ORDER BY [System.ChangedDate] DESC
     `;
 
