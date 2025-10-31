@@ -281,32 +281,15 @@ function App() {
 
         {step === 'upload' && (
           <div className="upload-section">
-            <div className="section-header">
-              <h2>Create Communications with AI</h2>
-              <p>
-                Upload your documents, transcripts, or specifications, and let AI generate
-                professional communications automatically.
-              </p>
-            </div>
-
-            <FileUpload
-              files={files}
-              onFilesSelected={handleFilesSelected}
-              onRemoveFile={handleRemoveFile}
-            />
-
-            <div className="divider">
-              <span>OR TYPE CONTENT DIRECTLY</span>
-            </div>
-
-            <div className="text-input-section">
-              <div className="text-input-header">
-                <h3>✍️ Quick Content Entry</h3>
-                <p>Paste notes, bullet points, or rough content here. Use "Enhance with AI" to polish it before generating documents.</p>
+            {/* Quick Content Entry - Dark Theme on Top */}
+            <div className="text-input-section-dark">
+              <div className="text-input-header-dark">
+                <h2>Quick Content Entry</h2>
+                <p>Enter your content directly or paste notes, bullet points, or rough ideas. AI will transform them into professional communications.</p>
               </div>
 
               <textarea
-                className="content-textarea"
+                className="content-textarea-dark"
                 placeholder="Enter your content here...
 
 Examples:
@@ -323,15 +306,15 @@ Or paste meeting notes, specifications, or any content you want to transform int
               />
 
               {manualText.trim() && (
-                <div className="text-input-actions">
+                <div className="text-input-actions-dark">
                   <button
-                    className="btn-enhance"
+                    className="btn-enhance-dark"
                     onClick={handleEnhanceText}
                     disabled={isEnhancing}
                   >
                     {isEnhancing ? (
                       <>
-                        <div className="spinner-small"></div>
+                        <div className="spinner-small-white"></div>
                         Enhancing...
                       </>
                     ) : (
@@ -344,7 +327,7 @@ Or paste meeting notes, specifications, or any content you want to transform int
                     )}
                   </button>
                   <button
-                    className="btn-clear"
+                    className="btn-clear-dark"
                     onClick={() => setManualText('')}
                   >
                     Clear
@@ -353,9 +336,27 @@ Or paste meeting notes, specifications, or any content you want to transform int
               )}
 
               {progressMessage && !isEnhancing && (
-                <p className="enhance-success">{progressMessage}</p>
+                <p className="enhance-success-dark">{progressMessage}</p>
               )}
             </div>
+
+            <div className="divider">
+              <span>OR UPLOAD FILES</span>
+            </div>
+
+            <div className="section-header">
+              <h2>Upload Documents</h2>
+              <p>
+                Upload your documents, transcripts, or specifications, and let AI generate
+                professional communications automatically.
+              </p>
+            </div>
+
+            <FileUpload
+              files={files}
+              onFilesSelected={handleFilesSelected}
+              onRemoveFile={handleRemoveFile}
+            />
 
             <div className="divider">
               <span>SELECT OUTPUT TYPES</span>

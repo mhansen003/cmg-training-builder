@@ -208,119 +208,141 @@
 }
 
 /* ============================================
-   TEXT INPUT SECTION
+   TEXT INPUT SECTION - DARK THEME
    ============================================ */
-.text-input-section {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.text-input-section-dark {
+  background: #1a1a1a;
+  padding: 3rem 2rem;
+  margin: -3rem -2rem 2rem -2rem;
+  border-radius: 0;
+}
+
+.text-input-header-dark {
+  text-align: center;
   margin-bottom: 2rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.text-input-header {
-  margin-bottom: 1.5rem;
-}
-
-.text-input-header h3 {
-  color: #2b3e50;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+.text-input-header-dark h2 {
+  color: #ffffff;
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
   font-weight: 600;
+  letter-spacing: -0.5px;
 }
 
-.text-input-header p {
-  color: #5a6c7d;
-  font-size: 0.95rem;
+.text-input-header-dark p {
+  color: #b0b0b0;
+  font-size: 1.05rem;
   line-height: 1.6;
   margin: 0;
 }
 
-.content-textarea {
+.content-textarea-dark {
   width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: block;
   min-height: 300px;
-  padding: 1.25rem;
-  border: 2px solid #e9ecef;
+  padding: 1.5rem;
+  border: 1px solid #333;
   border-radius: 8px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   font-size: 1rem;
-  line-height: 1.6;
-  color: #2b3e50;
+  line-height: 1.8;
+  color: #ffffff;
+  background: #2a2a2a;
   resize: vertical;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.content-textarea:focus {
+.content-textarea-dark:focus {
   outline: none;
   border-color: #9bc53d;
-  box-shadow: 0 0 0 3px rgba(155, 197, 61, 0.1);
-  background: #f8fff8;
+  box-shadow: 0 0 0 3px rgba(155, 197, 61, 0.2);
+  background: #2d2d2d;
 }
 
-.content-textarea::placeholder {
-  color: #95a5a6;
+.content-textarea-dark::placeholder {
+  color: #666;
   font-size: 0.95rem;
 }
 
-.text-input-actions {
+.text-input-actions-dark {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
-.btn-enhance {
-  background: linear-gradient(135deg, #1ab4a8 0%, #16a094 100%);
-  color: white;
+.btn-enhance-dark {
+  background: #9bc53d;
+  color: #1a1a1a;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: 0.85rem 2rem;
+  border-radius: 6px;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(26, 180, 168, 0.2);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
 }
 
-.btn-enhance:hover:not(:disabled) {
+.btn-enhance-dark:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(26, 180, 168, 0.3);
+  box-shadow: 0 6px 16px rgba(155, 197, 61, 0.4);
+  background: #8ab02f;
 }
 
-.btn-enhance:disabled {
-  opacity: 0.7;
+.btn-enhance-dark:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.btn-clear {
-  background: #e9ecef;
-  color: #2b3e50;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+.btn-clear-dark {
+  background: transparent;
+  color: #9bc53d;
+  border: 2px solid #9bc53d;
+  padding: 0.85rem 2rem;
+  border-radius: 6px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.btn-clear:hover {
-  background: #d3d6da;
+.btn-clear-dark:hover {
+  background: rgba(155, 197, 61, 0.1);
   transform: translateY(-1px);
 }
 
-.enhance-success {
+.spinner-small-white {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.enhance-success-dark {
   color: #9bc53d;
   font-weight: 600;
   margin-top: 1rem;
   padding: 0.75rem;
-  background: #e8f5e9;
+  background: rgba(155, 197, 61, 0.15);
   border-radius: 6px;
   text-align: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* ============================================
