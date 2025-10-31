@@ -118,7 +118,16 @@ For Training Guides, include:
 - Screenshots placeholders where helpful (mark as [Screenshot: description])
 - Tips and best practices
 - Common issues and solutions
-- Summary and next steps`,
+- Summary and next steps
+
+OUTPUT FORMAT: HTML with these tags:
+- <h2> for main sections
+- <h3> for subsections
+- <p> for paragraphs
+- <ol><li> for numbered steps
+- <ul><li> for bullet lists
+- <strong> for emphasis
+- Use CMG colors: headers with style="color: #2b3e50"`,
 
     'email': `${basePrompt}
 
@@ -128,7 +137,15 @@ For Email Announcements, include:
 - Key highlights in bullet points
 - Clear call-to-action
 - Links to additional resources
-- Professional and engaging tone`,
+- Professional and engaging tone
+
+OUTPUT FORMAT: HTML with these tags:
+- <h2> for subject line
+- <p> for overview paragraphs
+- <ul><li> for key highlights
+- <strong> for emphasis on important points
+- <a href="#"> for call-to-action links
+- Use CMG green (#9bc53d) for call-to-action buttons`,
 
     'quick-ref': `${basePrompt}
 
@@ -138,7 +155,15 @@ For Quick Reference Cards, include:
 - Key shortcuts or commands
 - Common tasks with quick steps
 - Keep it to ONE page worth of content
-- Use tables or lists for easy scanning`,
+- Use tables or lists for easy scanning
+
+OUTPUT FORMAT: HTML with these tags:
+- <h2> for main title
+- <h3> for sections
+- <table> for organized data (if applicable)
+- <ul><li> for quick lists
+- <strong> for keyboard shortcuts and commands
+- Keep layout compact and scannable`,
 
     'faq': `${basePrompt}
 
@@ -147,7 +172,15 @@ For FAQ Documents, include:
 - Clear, direct answers
 - Organized by category if applicable
 - Links to detailed documentation
-- Troubleshooting tips`,
+- Troubleshooting tips
+
+OUTPUT FORMAT: HTML with these tags:
+- <h2> for category headers
+- <h3 style="color: #2b3e50;"> for each question
+- <p> for answers
+- <ul><li> for multi-part answers
+- <strong> for key terms
+- <a href="#"> for documentation links`,
 
     'manual': `${basePrompt}
 
@@ -158,7 +191,16 @@ For User Manuals, include:
 - Step-by-step procedures
 - Troubleshooting section
 - Glossary of terms
-- Comprehensive and organized`,
+- Comprehensive and organized
+
+OUTPUT FORMAT: HTML with these tags:
+- <h2> for major sections
+- <h3> for subsections
+- <p> for descriptions
+- <ol><li> for step-by-step procedures
+- <ul><li> for feature lists
+- <strong> for important terms and concepts
+- Use CMG navy (#2b3e50) for headers`,
   };
 
   return specificPrompts[docType] || basePrompt;
@@ -177,14 +219,15 @@ function getUserPrompt(docType: DocumentType, sourceContent: string): string {
     'manual': 'User Manual',
   };
 
-  const format = docType === 'release-notes' ? 'HTML' : 'Markdown';
+  // All document types now output HTML
+  const format = 'HTML';
 
   return `Based on the following source material, create professional ${docTypeLabels[docType]} for CMG Financial employees and stakeholders.
 
 SOURCE MATERIAL:
 ${sourceContent}
 
-Please generate comprehensive ${docTypeLabels[docType]} in ${format} format.${docType === 'release-notes' ? ' Follow the CMG Clear & Byte Release Notes style exactly as specified in the system prompt.' : ''}`;
+Please generate comprehensive ${docTypeLabels[docType]} in ${format} format.${docType === 'release-notes' ? ' Follow the CMG Clear & Byte Release Notes style exactly as specified in the system prompt.' : ' Use proper HTML tags for structure, headings, paragraphs, lists, and emphasis. Make it clean and professional.'}`;
 }
 
 /**
