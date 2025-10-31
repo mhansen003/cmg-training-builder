@@ -451,7 +451,7 @@
    ============================================ */
 .document-card-modern {
   background: white;
-  border-radius: 12px;
+  border-radius: 4px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border: 2px solid #e9ecef;
   overflow: hidden;
@@ -500,7 +500,7 @@
 .btn-card-action {
   border: none;
   padding: 0.65rem 1.25rem;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
