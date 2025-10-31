@@ -3,25 +3,32 @@ import { saveAs } from 'file-saver';
 import type { GeneratedDoc } from '../types';
 
 /**
- * Converts markdown to simple HTML with styling
+ * Converts markdown to HTML with styling, or wraps existing HTML
  */
-function markdownToHtml(markdown: string, title: string): string {
-  // Basic markdown to HTML conversion (for simple cases)
-  let html = markdown
-    // Headers
-    .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-    // Bold
-    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-    // Italic
-    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-    // Lists
-    .replace(/^\- (.*$)/gim, '<li>$1</li>')
-    // Line breaks
-    .replace(/\n\n/g, '</p><p>')
-    // Links
-    .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>');
+function markdownToHtml(content: string, title: string): string {
+  let htmlContent = content;
+
+  // Check if content is already HTML (contains HTML tags)
+  const isAlreadyHtml = /<[a-z][\s\S]*>/i.test(content);
+
+  if (!isAlreadyHtml) {
+    // Convert Markdown to HTML
+    htmlContent = content
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      // Bold
+      .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+      // Italic
+      .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+      // Lists
+      .replace(/^\- (.*$)/gim, '<li>$1</li>')
+      // Line breaks
+      .replace(/\n\n/g, '</p><p>')
+      // Links
+      .replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2">$1</a>');
+  }
 
   return `<!DOCTYPE html>
 <html lang="en">

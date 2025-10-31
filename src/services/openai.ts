@@ -40,15 +40,75 @@ Guidelines:
 - Focus on user actions and outcomes`;
 
   const specificPrompts: Record<DocumentType, string> = {
-    'release-notes': `${basePrompt}
+    'release-notes': `You are creating release notes in the exact style used by CMG Financial for their "Clear & Byte Release Notes".
 
-For Release Notes, include:
-- Overview of what changed
-- New features and enhancements
-- Bug fixes
-- Impact on users
-- Action items (if any)
-- Format with dates and version numbers`,
+CRITICAL FORMATTING REQUIREMENTS - Follow CMG's exact style:
+
+1. START with friendly greeting:
+   "Hi Everyone,"
+   "Below you'll find all the items that have just been released."
+
+2. STRUCTURE each feature as:
+   **[Feature Name in Bold with Teal Color]**
+
+   [Brief introduction paragraph explaining the update]
+
+   **[Subsection Header in Bold]**
+   - Bullet with **bold keyword** followed by regular explanation
+   - Use **bold** for: product names, field names, feature names, technical terms
+   - Keep explanations clear and concise
+
+   **For [Specific Role]:** (e.g., "For Loan Officers:", "For Branch Managers:")
+   - Role-specific bullets
+
+   **Key Benefits:**
+   - Benefit 1
+   - Benefit 2
+
+3. TONE:
+   - Friendly and conversational (like "Hi Everyone")
+   - Professional but approachable
+   - Clear and direct
+   - Focus on user value
+
+4. CONTENT PATTERN for each feature:
+   - What changed/what's new
+   - How it works (with bold technical terms)
+   - Who it affects (role-specific sections)
+   - Why it matters (Key Benefits)
+
+5. OUTPUT FORMAT: HTML with these styles:
+   - Feature headers: <h3 style="color: #1ab4a8; font-weight: 600;">
+   - Subsection headers: <strong>
+   - Bold terms: <strong> within text
+   - Bullets: <ul><li>
+   - Keep paragraphs short and scannable
+
+EXAMPLE STRUCTURE:
+Hi Everyone,
+
+Below you'll find all the items that have just been released.
+
+<h3 style="color: #1ab4a8; font-weight: 600;">New in [System]: [Feature Name]</h3>
+
+<p>We've added [description of the update].</p>
+
+<p><strong>Best Pricing Tab</strong></p>
+<ul>
+<li>A new <strong>Best Pricing tab</strong> is now available.</li>
+<li>When selected, the system queries <strong>Optimal Blue</strong> for the <strong>best-priced products</strong> within each <strong>Product Group</strong>.</li>
+</ul>
+
+<p><strong>For Loan Officers:</strong></p>
+<ul>
+<li>All <strong>Loans Pipeline</strong> now shows all loans tied to your <strong>NMLS ID</strong>.</li>
+</ul>
+
+<p><strong>Key Benefits:</strong></p>
+<ul>
+<li>Full loan history access</li>
+<li>Improved cross-branch collaboration</li>
+</ul>`,
 
     'training-guide': `${basePrompt}
 
@@ -117,12 +177,14 @@ function getUserPrompt(docType: DocumentType, sourceContent: string): string {
     'manual': 'User Manual',
   };
 
+  const format = docType === 'release-notes' ? 'HTML' : 'Markdown';
+
   return `Based on the following source material, create professional ${docTypeLabels[docType]} for CMG Financial employees and stakeholders.
 
 SOURCE MATERIAL:
 ${sourceContent}
 
-Please generate comprehensive ${docTypeLabels[docType]} in Markdown format.`;
+Please generate comprehensive ${docTypeLabels[docType]} in ${format} format.${docType === 'release-notes' ? ' Follow the CMG Clear & Byte Release Notes style exactly as specified in the system prompt.' : ''}`;
 }
 
 /**
