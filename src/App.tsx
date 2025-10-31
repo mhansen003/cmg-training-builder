@@ -282,94 +282,87 @@ function App() {
 
         {step === 'upload' && (
           <div className="upload-section">
-            {/* Quick Content Entry - Dark Theme on Top */}
-            <div className="text-input-section-dark">
-              <div className="text-input-header-dark">
-                <h2>Describe Your Issue or Feature Request</h2>
-                <p>Drop documents, type your issue, or both. Our AI will extract the necessary information automatically.</p>
+            <div className="two-column-layout">
+              {/* Left Column: Output Selection */}
+              <div className="left-column">
+                <div className="output-options-sidebar">
+                  <h3>📝 Select Output Types</h3>
+                  <div className="checkbox-list">
+                    {DOCUMENT_OPTIONS.map(option => (
+                      <label key={option.id} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          checked={selectedOutputs.includes(option.id)}
+                          onChange={() => handleOutputToggle(option.id)}
+                        />
+                        <div className="checkbox-content">
+                          <span className="checkbox-label">{option.label}</span>
+                          <span className="checkbox-description">{option.description}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <textarea
-                className="content-textarea-dark"
-                placeholder="Paste or type your change request details here..."
-                value={manualText}
-                onChange={(e) => setManualText(e.target.value)}
-                rows={6}
-              />
-
-              {manualText.trim() && (
-                <div className="text-input-actions-dark">
-                  <button
-                    className="btn-enhance-dark"
-                    onClick={handleEnhanceText}
-                    disabled={isEnhancing}
-                  >
-                    {isEnhancing ? (
-                      <>
-                        <div className="spinner-small-white"></div>
-                        Enhancing...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                        </svg>
-                        Enhance with AI
-                      </>
-                    )}
-                  </button>
-                  <button
-                    className="btn-clear-dark"
-                    onClick={() => setManualText('')}
-                  >
-                    Clear
-                  </button>
+              {/* Right Column: Text Input and File Upload */}
+              <div className="right-column">
+                <div className="section-header">
+                  <h2>Describe Your Issue or Feature Request</h2>
+                  <p>Drop documents, type your issue, or both. Our AI will extract the necessary information automatically.</p>
                 </div>
-              )}
 
-              {progressMessage && !isEnhancing && (
-                <p className="enhance-success-dark">{progressMessage}</p>
-              )}
-            </div>
+                <textarea
+                  className="content-textarea-black"
+                  placeholder="Paste or type your change request details here..."
+                  value={manualText}
+                  onChange={(e) => setManualText(e.target.value)}
+                  rows={6}
+                />
 
-            <div className="divider">
-              <span>OR UPLOAD FILES</span>
-            </div>
+                {manualText.trim() && (
+                  <div className="text-input-actions">
+                    <button
+                      className="btn-enhance"
+                      onClick={handleEnhanceText}
+                      disabled={isEnhancing}
+                    >
+                      {isEnhancing ? (
+                        <>
+                          <div className="spinner-small"></div>
+                          Enhancing...
+                        </>
+                      ) : (
+                        <>
+                          <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                          Enhance with AI
+                        </>
+                      )}
+                    </button>
+                    <button
+                      className="btn-clear"
+                      onClick={() => setManualText('')}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                )}
 
-            <div className="section-header">
-              <h2>Upload Documents</h2>
-              <p>
-                Upload your documents, transcripts, or specifications, and let AI generate
-                professional communications automatically.
-              </p>
-            </div>
+                {progressMessage && !isEnhancing && (
+                  <p className="enhance-success">{progressMessage}</p>
+                )}
 
-            <FileUpload
-              files={files}
-              onFilesSelected={handleFilesSelected}
-              onRemoveFile={handleRemoveFile}
-            />
+                <div className="divider">
+                  <span>OR UPLOAD FILES</span>
+                </div>
 
-            <div className="divider">
-              <span>SELECT OUTPUT TYPES</span>
-            </div>
-
-            <div className="output-options">
-              <h3>📝 Communications to Generate</h3>
-              <div className="checkbox-grid">
-                {DOCUMENT_OPTIONS.map(option => (
-                  <label key={option.id} className="checkbox-card">
-                    <input
-                      type="checkbox"
-                      checked={selectedOutputs.includes(option.id)}
-                      onChange={() => handleOutputToggle(option.id)}
-                    />
-                    <div className="checkbox-content">
-                      <span className="checkbox-label">{option.label}</span>
-                      <span className="checkbox-description">{option.description}</span>
-                    </div>
-                  </label>
-                ))}
+                <FileUpload
+                  files={files}
+                  onFilesSelected={handleFilesSelected}
+                  onRemoveFile={handleRemoveFile}
+                />
               </div>
             </div>
 
