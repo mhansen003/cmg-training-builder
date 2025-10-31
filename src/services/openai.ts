@@ -617,6 +617,239 @@ CRITICAL FORMATTING REQUIREMENTS - Professional User Manual Style:
     - Provide context before procedures
 
 OUTPUT: Comprehensive HTML user manual with CMG branding (navy #2b3e50 for major headers, teal #1ab4a8 for subsections, green #9bc53d for accents), fully navigable and professional`,
+
+    'tech-guide': `You are creating an App Support Technical Guide for CMG Financial support teams - detailed technical documentation to help app support personnel understand features and troubleshoot issues.
+
+CRITICAL FORMATTING REQUIREMENTS - Technical Support Guide Style:
+
+1. TITLE & OVERVIEW section:
+   <div style="background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%); color: white; padding: 2.5rem 2rem; margin-bottom: 2rem;">
+   <h1 style="color: white; font-size: 1.8rem; margin: 0 0 0.5rem 0;">🔧 App Support Technical Guide</h1>
+   <h2 style="color: #9bc53d; font-size: 1.3rem; margin: 0 0 1rem 0;">[Feature/System Name]</h2>
+   <p style="color: #e0e0e0; margin: 0; font-size: 0.95rem;">Technical reference for app support personnel</p>
+   </div>
+
+   <div style="background: #fff3cd; padding: 1.5rem; border-left: 4px solid #ffc107; margin-bottom: 2rem;">
+   <p style="margin: 0; font-weight: 600; color: #856404;">⚡ Quick Context</p>
+   <p style="margin: 0.5rem 0 0 0; color: #856404;">[One-sentence summary of what this feature does and why it matters]</p>
+   </div>
+
+2. TECHNICAL OVERVIEW section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">Technical Overview</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">System Architecture</h3>
+   <p>[High-level explanation of how the feature works technically]</p>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Key Components</h3>
+   <ul>
+   <li><strong>Component Name:</strong> Description and purpose</li>
+   <li><strong>Integration Points:</strong> What systems/APIs this connects to</li>
+   <li><strong>Data Flow:</strong> How information moves through the system</li>
+   </ul>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Technical Requirements</h3>
+   <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+   <tr style="background: #f8f9fa;">
+     <th style="padding: 0.75rem; text-align: left; border: 1px solid #dee2e6; font-weight: 600; color: #2b3e50;">Requirement</th>
+     <th style="padding: 0.75rem; text-align: left; border: 1px solid #dee2e6; font-weight: 600; color: #2b3e50;">Details</th>
+   </tr>
+   <tr>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Browser Support</strong></td>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;">[Supported browsers and versions]</td>
+   </tr>
+   <tr>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Permissions</strong></td>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;">[Required user roles or permissions]</td>
+   </tr>
+   <tr>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><strong>Dependencies</strong></td>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;">[External systems or services required]</td>
+   </tr>
+   </table>
+
+3. HOW IT WORKS section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">How It Works (Technical Flow)</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">User Workflow</h3>
+   <ol style="line-height: 1.8;">
+   <li><strong>Step 1:</strong> User action → Technical process
+     <ul>
+     <li>Backend: [What happens on the server]</li>
+     <li>Frontend: [What happens in the UI]</li>
+     <li>Expected result: [What the user sees]</li>
+     </ul>
+   </li>
+   <li><strong>Step 2:</strong> Continue with technical details at each step</li>
+   </ol>
+
+   <div style="background: #e8f5e9; padding: 1.5rem; border-left: 4px solid #9bc53d; margin: 1.5rem 0;">
+   <p style="margin: 0; font-weight: 600; color: #2b3e50;">🔍 Behind the Scenes</p>
+   <p style="margin: 0.5rem 0 0 0; color: #2b3e50;">[Explain technical processes that support people should understand, like API calls, database updates, caching behavior, etc.]</p>
+   </div>
+
+4. CONFIGURATION & SETTINGS section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">Configuration & Settings</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Admin Configuration</h3>
+   <p><strong>Location:</strong> [Where admins configure this feature]</p>
+   <p><strong>Key Settings:</strong></p>
+   <ul>
+   <li><strong>Setting Name:</strong> What it controls and default value</li>
+   <li><strong>Feature Flags:</strong> Any toggles that enable/disable functionality</li>
+   </ul>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Environment Variables</h3>
+   <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; font-family: monospace; font-size: 0.9rem;">
+   <tr style="background: #f8f9fa;">
+     <th style="padding: 0.75rem; text-align: left; border: 1px solid #dee2e6;">Variable</th>
+     <th style="padding: 0.75rem; text-align: left; border: 1px solid #dee2e6;">Purpose</th>
+     <th style="padding: 0.75rem; text-align: left; border: 1px solid #dee2e6;">Default</th>
+   </tr>
+   <tr>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;"><code>[VAR_NAME]</code></td>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;">[What it does]</td>
+     <td style="padding: 0.75rem; border: 1px solid #dee2e6;">[Default value]</td>
+   </tr>
+   </table>
+
+5. TROUBLESHOOTING section (MOST IMPORTANT FOR SUPPORT):
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #dc3545;">🚨 Troubleshooting Guide</h2>
+
+   <div style="border: 2px solid #dc3545; border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0;">
+   <h3 style="color: #dc3545; margin: 0 0 1rem 0; font-size: 1.2rem;">Issue: [Common Problem Description]</h3>
+
+   <p><strong>Symptoms:</strong></p>
+   <ul>
+   <li>What the user reports</li>
+   <li>Error messages or behaviors</li>
+   </ul>
+
+   <p><strong>Possible Causes:</strong></p>
+   <ol>
+   <li><strong>Cause 1:</strong> Technical explanation
+     <ul>
+     <li><strong>How to check:</strong> [Diagnostic steps]</li>
+     <li><strong>Solution:</strong> [Fix steps]</li>
+     </ul>
+   </li>
+   <li><strong>Cause 2:</strong> Continue with other causes</li>
+   </ol>
+
+   <p><strong>Diagnostic Commands/Checks:</strong></p>
+   <ul>
+   <li>Check browser console: <code>[What to look for]</code></li>
+   <li>Check network tab: <code>[Expected API calls]</code></li>
+   <li>Check database: <code>[What data should exist]</code></li>
+   </ul>
+   </div>
+
+   <div style="background: #fff3cd; padding: 1.5rem; border-left: 4px solid #ffc107; margin: 1.5rem 0;">
+   <p style="margin: 0; font-weight: 600; color: #856404;">⚠️ Escalation Criteria</p>
+   <p style="margin: 0.5rem 0 0 0; color: #856404;">Escalate to engineering if [specific conditions that indicate a bug or system issue rather than user error]</p>
+   </div>
+
+6. COMMON SUPPORT SCENARIOS section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">Common Support Scenarios</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Scenario: [User Request Type]</h3>
+   <p><strong>User Says:</strong> "[Typical user complaint or question]"</p>
+   <p><strong>What's Actually Happening:</strong> [Technical explanation]</p>
+   <p><strong>How to Resolve:</strong></p>
+   <ol>
+   <li>Step-by-step resolution with technical context</li>
+   <li>Include where to click, what values to check, etc.</li>
+   </ol>
+   <p><strong>If That Doesn't Work:</strong> [Alternative approaches or escalation]</p>
+
+7. DATA & LOGGING section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">Data & Logging</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Where Data is Stored</h3>
+   <ul>
+   <li><strong>Database Tables:</strong> [Table names and what they store]</li>
+   <li><strong>Cache:</strong> [What's cached and for how long]</li>
+   <li><strong>External Systems:</strong> [Third-party services that store data]</li>
+   </ul>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">Log Locations</h3>
+   <ul>
+   <li><strong>Application Logs:</strong> [Where to find them, what to search for]</li>
+   <li><strong>Error Tracking:</strong> [Sentry, Datadog, etc. - where to look for errors]</li>
+   <li><strong>Useful Log Keywords:</strong> <code>[ERROR_CODE]</code>, <code>[FEATURE_NAME]</code></li>
+   </ul>
+
+8. KNOWN ISSUES & WORKAROUNDS section:
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #ffc107;">Known Issues & Workarounds</h2>
+
+   <div style="background: #fff3cd; padding: 1.5rem; border-radius: 4px; margin: 1.5rem 0;">
+   <p style="margin: 0; font-weight: 600; color: #856404;">⚠️ [Known Issue Title]</p>
+   <p style="margin: 0.5rem 0; color: #856404;"><strong>Description:</strong> [What the issue is]</p>
+   <p style="margin: 0.5rem 0; color: #856404;"><strong>Workaround:</strong> [Temporary fix or guidance for users]</p>
+   <p style="margin: 0.5rem 0 0 0; color: #856404;"><strong>Status:</strong> [In progress, fix scheduled for X.X release, etc.]</p>
+   </div>
+
+9. API ENDPOINTS section (if applicable):
+   <h2 style="color: #2b3e50; font-size: 1.5rem; font-weight: 700; margin-top: 2rem; padding-bottom: 0.75rem; border-bottom: 3px solid #1ab4a8;">API Endpoints</h2>
+
+   <h3 style="color: #1ab4a8; font-weight: 600; font-size: 1.2rem; margin-top: 1.5rem;">GET /api/[endpoint]</h3>
+   <p><strong>Purpose:</strong> [What this endpoint does]</p>
+   <p><strong>Parameters:</strong></p>
+   <ul style="font-family: monospace; font-size: 0.9rem;">
+   <li><code>param_name</code> (string, required): [Description]</li>
+   </ul>
+   <p><strong>Expected Response:</strong></p>
+   <pre style="background: #f8f9fa; padding: 1rem; border-radius: 4px; overflow-x: auto;"><code>{
+  "status": "success",
+  "data": { }
+}</code></pre>
+   <p><strong>Common Errors:</strong></p>
+   <ul>
+   <li><strong>404:</strong> [What it means and how to fix]</li>
+   <li><strong>500:</strong> [What it means and what to check]</li>
+   </ul>
+
+10. SUPPORT CONTACTS & RESOURCES section:
+    <div style="background: linear-gradient(135deg, #2b3e50 0%, #3a4f63 100%); color: white; padding: 2rem; border-radius: 8px; margin-top: 3rem;">
+    <h2 style="color: white; margin: 0 0 1.5rem 0; font-size: 1.3rem;">📞 Support Resources</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div>
+        <p style="margin: 0; font-weight: 600; color: #9bc53d;">Engineering Team</p>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">[Contact/Slack channel]</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 600; color: #9bc53d;">Product Owner</p>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">[Contact person]</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 600; color: #9bc53d;">Documentation</p>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">[Link to technical docs]</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 600; color: #9bc53d;">Runbook</p>
+        <p style="margin: 0.25rem 0 0 0; font-size: 0.9rem;">[Link to operational runbook]</p>
+      </div>
+    </div>
+    </div>
+
+11. CONTENT FOCUS:
+    - Write for **technical support personnel** who need to troubleshoot
+    - Include **system-level details** (APIs, databases, logs, configurations)
+    - Prioritize **troubleshooting** and **diagnostic information**
+    - Explain **what happens behind the scenes** technically
+    - Provide **exact locations** (DB tables, log files, config settings)
+    - Include **error codes** and **what they mean**
+    - List **common failure modes** and **how to identify them**
+    - Give **escalation criteria** (when to involve engineering)
+
+12. TONE & STYLE:
+    - Technical and precise
+    - Assumes reader has system access and technical knowledge
+    - Focus on "how to diagnose" and "how to fix"
+    - Use technical terminology
+    - Include specific commands, queries, or checks
+    - Provide context for WHY things work a certain way
+
+OUTPUT: Comprehensive HTML technical support guide with CMG branding (navy #2b3e50 for headers, teal #1ab4a8 for subsections, red #dc3545 for troubleshooting sections, yellow #ffc107 for warnings), optimized for app support teams to diagnose and resolve issues`,
   };
 
   return specificPrompts[docType] || basePrompt;
@@ -633,6 +866,7 @@ function getUserPrompt(docType: DocumentType, sourceContent: string): string {
     'quick-ref': 'Quick Reference Card',
     'faq': 'FAQ Document',
     'manual': 'User Manual',
+    'tech-guide': 'App Support Technical Guide',
   };
 
   // All document types now output HTML

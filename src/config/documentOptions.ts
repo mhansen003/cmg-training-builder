@@ -37,4 +37,10 @@ export const DOCUMENT_OPTIONS: DocumentOption[] = [
     description: 'Comprehensive user documentation',
     prompt: 'Create a user manual',
   },
+  {
+    id: 'tech-guide',
+    label: 'App Support Technical Guide',
+    description: 'Technical details for app support teams',
+    prompt: 'Create a technical support guide',
+  },
 ];

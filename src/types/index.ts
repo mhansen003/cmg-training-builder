@@ -11,7 +11,8 @@ export type DocumentType =
   | 'email'
   | 'quick-ref'
   | 'faq'
-  | 'manual';
+  | 'manual'
+  | 'tech-guide';
 
 export interface DocumentOption {
   id: DocumentType;
