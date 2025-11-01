@@ -296,10 +296,46 @@
   background: white;
   border: 2px solid #e2e8f0;
   border-radius: 10px;
-  cursor: pointer;
   transition: all 0.2s;
   min-height: 160px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.ado-work-item-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ado-work-item-content {
+  flex: 1;
+  cursor: pointer;
+}
+
+.ado-work-item-view-btn {
+  background: #f0f9ff;
+  border: 1px solid #0ea5e9;
+  color: #0369a1;
+  padding: 0.375rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.ado-work-item-view-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ado-work-item-view-btn:hover {
+  background: #0ea5e9;
+  color: white;
+  transform: scale(1.05);
 }
 
 .ado-work-item:hover {
@@ -615,6 +651,280 @@
   background: #a0aec0;
 }
 
+/* View Modal - Full Screen */
+.ado-view-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ado-view-modal-container {
+  background: white;
+  border-radius: 16px;
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ado-view-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+}
+
+.ado-view-modal-title-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.ado-view-modal-title-section h3 {
+  color: #2d3748;
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ado-view-modal-type {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #e0e7ff;
+  color: #4338ca;
+  margin-right: 0.5rem;
+}
+
+.ado-view-modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.ado-view-modal-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ado-view-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.ado-view-modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.ado-view-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+.ado-view-field {
+  margin-bottom: 1.5rem;
+}
+
+.ado-view-field-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ado-view-value {
+  font-size: 1rem;
+  color: #2d3748;
+  line-height: 1.6;
+  padding: 0.75rem 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.ado-view-html {
+  font-size: 0.95rem;
+  color: #2d3748;
+  line-height: 1.6;
+  padding: 1rem 1.25rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.ado-view-html::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ado-view-html::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.ado-view-html::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+.ado-view-html p {
+  margin: 0 0 0.75rem 0;
+}
+
+.ado-view-html ul, .ado-view-html ol {
+  margin: 0.5rem 0 0.75rem 1.5rem;
+}
+
+.ado-view-html li {
+  margin-bottom: 0.25rem;
+}
+
+.ado-view-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.ado-view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0ea5e9;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+  padding: 0.5rem 1rem;
+  background: #f0f9ff;
+  border-radius: 8px;
+  border: 1px solid #0ea5e9;
+}
+
+.ado-view-link:hover {
+  background: #0ea5e9;
+  color: white;
+  transform: translateX(2px);
+}
+
+.ado-view-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ado-view-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ado-view-tag {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ado-view-modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 2px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: #f7fafc;
+}
+
+.ado-view-btn-close,
+.ado-view-btn-add,
+.ado-view-btn-remove {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ado-view-btn-close {
+  background: white;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+}
+
+.ado-view-btn-close:hover {
+  background: #f7fafc;
+  border-color: #cbd5e0;
+}
+
+.ado-view-btn-add {
+  background: #9bc53d;
+  color: white;
+}
+
+.ado-view-btn-add:hover {
+  background: #8bb32d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(155, 197, 61, 0.3);
+}
+
+.ado-view-btn-remove {
+  background: #fed7d7;
+  color: #c53030;
+  border: 2px solid #fc8181;
+}
+
+.ado-view-btn-remove:hover {
+  background: #fc8181;
+  color: white;
+  transform: translateY(-1px);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .ado-modal-container {
@@ -655,5 +965,33 @@
   .ado-btn-cancel,
   .ado-btn-import {
     width: 100%;
+  }
+
+  .ado-view-modal-container {
+    max-width: 100%;
+    max-height: 95vh;
+  }
+
+  .ado-view-modal-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .ado-view-modal-body {
+    padding: 1.5rem;
+  }
+
+  .ado-view-modal-footer {
+    padding: 1.25rem 1.5rem;
+    flex-direction: column;
+  }
+
+  .ado-view-btn-close,
+  .ado-view-btn-add,
+  .ado-view-btn-remove {
+    width: 100%;
+  }
+
+  .ado-view-field-grid {
+    grid-template-columns: 1fr;
   }
 }

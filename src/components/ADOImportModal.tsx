@@ -27,6 +27,9 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   const [changedDateFrom, setChangedDateFrom] = useState('');
   const [changedDateTo, setChangedDateTo] = useState('');
 
+  // View modal state
+  const [viewingWorkItem, setViewingWorkItem] = useState<ADOWorkItem | null>(null);
+
   // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -359,15 +362,33 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                     <div
                       key={workItem.id}
                       className={`ado-work-item ${selectedIds.has(workItem.id) ? 'selected' : ''}`}
-                      onClick={() => toggleSelection(workItem.id)}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(workItem.id)}
-                        onChange={() => toggleSelection(workItem.id)}
-                        className="ado-work-item-checkbox"
-                      />
-                      <div className="ado-work-item-content">
+                      <div className="ado-work-item-header-row">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.has(workItem.id)}
+                          onChange={() => toggleSelection(workItem.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="ado-work-item-checkbox"
+                        />
+                        <button
+                          className="ado-work-item-view-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setViewingWorkItem(workItem);
+                          }}
+                          title="View full details"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div
+                        className="ado-work-item-content"
+                        onClick={() => toggleSelection(workItem.id)}
+                      >
                         <div className="ado-work-item-header">
                           <span className="ado-work-item-id">#{workItem.id}</span>
                           {workItem.fields['System.TeamProject'] && (
@@ -443,6 +464,127 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
           </button>
         </div>
       </div>
+
+      {/* View Work Item Modal */}
+      {viewingWorkItem && (
+        <div className="ado-view-modal-overlay" onClick={() => setViewingWorkItem(null)}>
+          <div className="ado-view-modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="ado-view-modal-header">
+              <div>
+                <h2>Work Item #{viewingWorkItem.id}</h2>
+                <p className="ado-view-modal-type">{viewingWorkItem.fields['System.WorkItemType']}</p>
+              </div>
+              <button className="ado-modal-close" onClick={() => setViewingWorkItem(null)} aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="ado-view-modal-body">
+              <div className="ado-view-field">
+                <label>Title</label>
+                <div className="ado-view-value">{viewingWorkItem.fields['System.Title']}</div>
+              </div>
+
+              {viewingWorkItem.fields['System.Description'] && (
+                <div className="ado-view-field">
+                  <label>Description</label>
+                  <div
+                    className="ado-view-value ado-view-html"
+                    dangerouslySetInnerHTML={{ __html: viewingWorkItem.fields['System.Description'] }}
+                  />
+                </div>
+              )}
+
+              <div className="ado-view-field-grid">
+                {viewingWorkItem.fields['System.TeamProject'] && (
+                  <div className="ado-view-field">
+                    <label>Project</label>
+                    <div className="ado-view-value">{viewingWorkItem.fields['System.TeamProject']}</div>
+                  </div>
+                )}
+
+                <div className="ado-view-field">
+                  <label>State</label>
+                  <div className="ado-view-value">
+                    <span className={`ado-work-item-state state-${viewingWorkItem.fields['System.State'].toLowerCase().replace(/\s+/g, '-')}`}>
+                      {viewingWorkItem.fields['System.State']}
+                    </span>
+                  </div>
+                </div>
+
+                {viewingWorkItem.fields['System.IterationPath'] && (
+                  <div className="ado-view-field">
+                    <label>Iteration</label>
+                    <div className="ado-view-value">{viewingWorkItem.fields['System.IterationPath']}</div>
+                  </div>
+                )}
+
+                {viewingWorkItem.fields['System.AreaPath'] && (
+                  <div className="ado-view-field">
+                    <label>Area Path</label>
+                    <div className="ado-view-value">{viewingWorkItem.fields['System.AreaPath']}</div>
+                  </div>
+                )}
+
+                {viewingWorkItem.fields['System.CreatedDate'] && (
+                  <div className="ado-view-field">
+                    <label>Created Date</label>
+                    <div className="ado-view-value">
+                      {new Date(viewingWorkItem.fields['System.CreatedDate']).toLocaleString()}
+                    </div>
+                  </div>
+                )}
+
+                {viewingWorkItem.fields['System.ChangedDate'] && (
+                  <div className="ado-view-field">
+                    <label>Changed Date</label>
+                    <div className="ado-view-value">
+                      {new Date(viewingWorkItem.fields['System.ChangedDate']).toLocaleString()}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {viewingWorkItem.fields['System.Tags'] && (
+                <div className="ado-view-field">
+                  <label>Tags</label>
+                  <div className="ado-work-item-tags">
+                    {viewingWorkItem.fields['System.Tags'].split(';').map((tag: string, idx: number) => (
+                      <span key={idx} className="ado-tag">{tag.trim()}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="ado-view-field">
+                <label>ADO Link</label>
+                <div className="ado-view-value">
+                  <a href={viewingWorkItem.url} target="_blank" rel="noopener noreferrer" className="ado-view-link">
+                    Open in Azure DevOps ↗
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="ado-view-modal-footer">
+              <button className="ado-btn-cancel" onClick={() => setViewingWorkItem(null)}>
+                Close
+              </button>
+              <button
+                className="ado-btn-import"
+                onClick={() => {
+                  toggleSelection(viewingWorkItem.id);
+                  setViewingWorkItem(null);
+                }}
+              >
+                {selectedIds.has(viewingWorkItem.id) ? 'Remove from Selection' : 'Add to Selection'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
