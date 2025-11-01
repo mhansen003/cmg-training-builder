@@ -110,14 +110,15 @@ export default async function handler(
 
     // If no specific filters, add a date filter to prevent querying entire organization
     // This helps with performance and avoids ADO API restrictions
+    // Default to work items changed in the last 12 months
     if (conditions.length === 0) {
-      const sixMonthsAgo = new Date();
-      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-      const dateStr = sixMonthsAgo.toISOString().split('T')[0];
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      const dateStr = oneYearAgo.toISOString().split('T')[0];
       conditions.push(`[System.ChangedDate] >= '${dateStr}'`);
     }
 
-    // Build WHERE clause
+    // Build WHERE clause - always have at least one condition
     const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
     const wiql = `
@@ -126,6 +127,9 @@ export default async function handler(
       ${whereClause}
       ORDER BY [System.ChangedDate] DESC
     `;
+
+    // Log the query for debugging
+    console.log('ADO WIQL Query:', wiql);
 
     // Use organization-level endpoint for cross-project queries
     const queryUrl = project && project !== 'All Projects'
@@ -193,9 +197,11 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error('ADO search error:', error.message);
+    console.error('Error details:', error.response?.data || error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to search ADO work items'
+      error: error.response?.data?.message || error.message || 'Failed to search ADO work items',
+      details: error.response?.data || undefined
     });
   }
 }

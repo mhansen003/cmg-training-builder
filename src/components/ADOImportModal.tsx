@@ -132,7 +132,7 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
             <div className="ado-search-bar">
               <input
                 type="text"
-                placeholder="Search work items by title..."
+                placeholder="Search work items by title (optional - leave empty to see all)..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -158,6 +158,10 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                 )}
               </button>
             </div>
+
+            <p className="ado-search-hint">
+              💡 No filters? We'll show work items changed in the last 12 months across all projects
+            </p>
 
             <div className="ado-filters">
               <div className="ado-filter-group">
