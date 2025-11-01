@@ -35,6 +35,13 @@ export default async function handler(
       workItemType,
       state,
       project,
+      iterationPath,
+      assignedTo,
+      createdBy,
+      createdDateFrom,
+      createdDateTo,
+      changedDateFrom,
+      changedDateTo,
       maxResults = 50
     } = req.body;
 
@@ -67,6 +74,38 @@ export default async function handler(
 
     if (state) {
       conditions.push(`[System.State] = '${state}'`);
+    }
+
+    // Sprint/Iteration filter
+    if (iterationPath) {
+      conditions.push(`[System.IterationPath] CONTAINS '${iterationPath.replace(/'/g, "''")}'`);
+    }
+
+    // Assigned To filter
+    if (assignedTo) {
+      conditions.push(`[System.AssignedTo] CONTAINS '${assignedTo.replace(/'/g, "''")}'`);
+    }
+
+    // Created By filter
+    if (createdBy) {
+      conditions.push(`[System.CreatedBy] CONTAINS '${createdBy.replace(/'/g, "''")}'`);
+    }
+
+    // Date range filters
+    if (createdDateFrom) {
+      conditions.push(`[System.CreatedDate] >= '${createdDateFrom}'`);
+    }
+
+    if (createdDateTo) {
+      conditions.push(`[System.CreatedDate] <= '${createdDateTo}'`);
+    }
+
+    if (changedDateFrom) {
+      conditions.push(`[System.ChangedDate] >= '${changedDateFrom}'`);
+    }
+
+    if (changedDateTo) {
+      conditions.push(`[System.ChangedDate] <= '${changedDateTo}'`);
     }
 
     // If no specific filters, add a date filter to prevent querying entire organization

@@ -24,6 +24,13 @@ export interface SearchADOParams {
   workItemType?: string;
   state?: string;
   project?: string;
+  iterationPath?: string;
+  assignedTo?: string;
+  createdBy?: string;
+  createdDateFrom?: string;
+  createdDateTo?: string;
+  changedDateFrom?: string;
+  changedDateTo?: string;
   maxResults?: number;
 }
 

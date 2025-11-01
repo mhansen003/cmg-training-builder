@@ -18,6 +18,15 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
+  // New advanced filters
+  const [iterationPath, setIterationPath] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
+  const [createdBy, setCreatedBy] = useState('');
+  const [createdDateFrom, setCreatedDateFrom] = useState('');
+  const [createdDateTo, setCreatedDateTo] = useState('');
+  const [changedDateFrom, setChangedDateFrom] = useState('');
+  const [changedDateTo, setChangedDateTo] = useState('');
+
   // Reset state when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +34,13 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
       setWorkItemType('All Types');
       setState('');
       setProject('All Projects');
+      setIterationPath('');
+      setAssignedTo('');
+      setCreatedBy('');
+      setCreatedDateFrom('');
+      setCreatedDateTo('');
+      setChangedDateFrom('');
+      setChangedDateTo('');
       setSearchResults([]);
       setSelectedIds(new Set());
       setError(null);
@@ -44,6 +60,13 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
         workItemType: workItemType === 'All Types' ? undefined : workItemType,
         state: state || undefined,
         project,
+        iterationPath: iterationPath || undefined,
+        assignedTo: assignedTo || undefined,
+        createdBy: createdBy || undefined,
+        createdDateFrom: createdDateFrom || undefined,
+        createdDateTo: createdDateTo || undefined,
+        changedDateFrom: changedDateFrom || undefined,
+        changedDateTo: changedDateTo || undefined,
         maxResults: 50
       });
 
@@ -189,6 +212,90 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                   <option value="Closed">Closed</option>
                   <option value="Removed">Removed</option>
                 </select>
+              </div>
+
+              <div className="ado-filter-group">
+                <label htmlFor="iterationPath">Sprint/Iteration</label>
+                <input
+                  id="iterationPath"
+                  type="text"
+                  value={iterationPath}
+                  onChange={(e) => setIterationPath(e.target.value)}
+                  placeholder="e.g., Sprint 23"
+                  className="ado-filter-select"
+                />
+              </div>
+            </div>
+
+            <div className="ado-filters-row-2">
+              <div className="ado-filter-group">
+                <label htmlFor="assignedTo">Assigned To</label>
+                <input
+                  id="assignedTo"
+                  type="text"
+                  value={assignedTo}
+                  onChange={(e) => setAssignedTo(e.target.value)}
+                  placeholder="Name or email"
+                  className="ado-filter-select"
+                />
+              </div>
+
+              <div className="ado-filter-group">
+                <label htmlFor="createdBy">Created By</label>
+                <input
+                  id="createdBy"
+                  type="text"
+                  value={createdBy}
+                  onChange={(e) => setCreatedBy(e.target.value)}
+                  placeholder="Name or email"
+                  className="ado-filter-select"
+                />
+              </div>
+
+              <div className="ado-filter-group">
+                <label htmlFor="createdDateFrom">Created Date From</label>
+                <input
+                  id="createdDateFrom"
+                  type="date"
+                  value={createdDateFrom}
+                  onChange={(e) => setCreatedDateFrom(e.target.value)}
+                  className="ado-filter-select"
+                />
+              </div>
+            </div>
+
+            <div className="ado-filters-row-2">
+              <div className="ado-filter-group">
+                <label htmlFor="createdDateTo">Created Date To</label>
+                <input
+                  id="createdDateTo"
+                  type="date"
+                  value={createdDateTo}
+                  onChange={(e) => setCreatedDateTo(e.target.value)}
+                  className="ado-filter-select"
+                />
+              </div>
+
+              <div className="ado-filter-group">
+                <label htmlFor="changedDateFrom">Changed Date From</label>
+                <input
+                  id="changedDateFrom"
+                  type="date"
+                  value={changedDateFrom}
+                  onChange={(e) => setChangedDateFrom(e.target.value)}
+                  className="ado-filter-select"
+                />
+              </div>
+
+              <div className="ado-filter-group">
+                <label htmlFor="changedDateTo">Changed Date To</label>
+                <input
+                  id="changedDateTo"
+                  type="date"
+                  value={changedDateTo}
+                  onChange={(e) => setChangedDateTo(e.target.value)}
+                  className="ado-filter-select"
+                />
               </div>
             </div>
           </div>
