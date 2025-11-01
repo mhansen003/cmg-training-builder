@@ -77,7 +77,19 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
       }
     } catch (err: any) {
       console.error('Search error:', err);
-      setError(err.response?.data?.message || 'Failed to search ADO work items. Please check your configuration.');
+      console.error('Response data:', err.response?.data);
+
+      // Show detailed error message
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to search ADO work items';
+      const errorDetails = err.response?.data?.details;
+
+      if (errorDetails) {
+        console.error('Error details:', errorDetails);
+        setError(`${errorMessage}\n\nDetails: ${JSON.stringify(errorDetails, null, 2)}`);
+      } else {
+        setError(errorMessage);
+      }
+
       setSearchResults([]);
     } finally {
       setIsSearching(false);
