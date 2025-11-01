@@ -143,10 +143,19 @@
   box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
 }
 
-.btn-header-ado:hover {
+.btn-header-ado:hover:not(:disabled) {
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(14, 165, 233, 0.3);
+}
+
+.btn-header-ado:disabled {
+  background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%);
+  color: #718096;
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+  transform: none;
 }
 
 .btn-icon {

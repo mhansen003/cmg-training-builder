@@ -560,7 +560,12 @@ function App() {
             <h1 className="header-title">Communications Builder</h1>
           </div>
           <div className="header-right">
-            <button className="btn-header-ado" onClick={() => setShowADOImportModal(true)}>
+            <button
+              className="btn-header-ado"
+              onClick={() => setShowADOImportModal(true)}
+              disabled={step !== 'upload'}
+              title={step !== 'upload' ? 'Import ADO is only available on the main screen' : 'Import work items from Azure DevOps'}
+            >
               <svg className="btn-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
