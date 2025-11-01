@@ -624,7 +624,7 @@ function App() {
               {/* Right Column: Text Input and File Upload */}
               <div className="right-column">
                 <div className="section-header">
-                  <p>Drop documents or screen shots of your feature, or describe it in text in the box below</p>
+                  <p>Drop documents or screen shots of your feature, describe it in text below, or click <strong>Import ADO</strong> above to import from Azure DevOps</p>
                 </div>
 
                 <textarea
