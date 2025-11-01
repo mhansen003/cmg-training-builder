@@ -69,8 +69,17 @@ export default async function handler(
       conditions.push(`[System.State] = '${state}'`);
     }
 
-    // Build WHERE clause only if there are conditions
-    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+    // If no specific filters, add a date filter to prevent querying entire organization
+    // This helps with performance and avoids ADO API restrictions
+    if (conditions.length === 0) {
+      const sixMonthsAgo = new Date();
+      sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+      const dateStr = sixMonthsAgo.toISOString().split('T')[0];
+      conditions.push(`[System.ChangedDate] >= '${dateStr}'`);
+    }
+
+    // Build WHERE clause
+    const whereClause = `WHERE ${conditions.join(' AND ')}`;
 
     const wiql = `
       SELECT [System.Id]
