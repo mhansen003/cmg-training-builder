@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { searchADOWorkItems, type ADOWorkItem } from '../services/ado';
+import { searchADOWorkItems, fetchADOProjects, type ADOWorkItem, type ADOProject } from '../services/ado';
 import './ADOImportModal.css';
 
 interface ADOImportModalProps {
@@ -18,6 +18,11 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
+  // Dynamic project fetching
+  const [projects, setProjects] = useState<ADOProject[]>([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+  const [projectsError, setProjectsError] = useState<string | null>(null);
+
   // New advanced filters
   const [iterationPath, setIterationPath] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
@@ -29,6 +34,27 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
 
   // View modal state
   const [viewingWorkItem, setViewingWorkItem] = useState<ADOWorkItem | null>(null);
+
+  // Fetch projects when modal opens
+  useEffect(() => {
+    if (isOpen && projects.length === 0 && !isLoadingProjects) {
+      const loadProjects = async () => {
+        setIsLoadingProjects(true);
+        setProjectsError(null);
+        try {
+          const result = await fetchADOProjects();
+          setProjects(result.projects);
+        } catch (err: any) {
+          console.error('Failed to fetch projects:', err);
+          const errorMessage = err.response?.data?.error || err.message || 'Failed to load projects';
+          setProjectsError(errorMessage);
+        } finally {
+          setIsLoadingProjects(false);
+        }
+      };
+      loadProjects();
+    }
+  }, [isOpen, projects.length, isLoadingProjects]);
 
   // Reset state when modal opens
   useEffect(() => {
@@ -180,22 +206,24 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
 
             <div className="ado-filters">
               <div className="ado-filter-group">
-                <label htmlFor="project">Project</label>
+                <label htmlFor="project">
+                  Project
+                  {isLoadingProjects && <span style={{ marginLeft: '8px', fontSize: '0.85em', color: '#666' }}>(Loading...)</span>}
+                  {projectsError && <span style={{ marginLeft: '8px', fontSize: '0.85em', color: '#d32f2f' }}>(Failed to load)</span>}
+                </label>
                 <select
                   id="project"
                   value={project}
                   onChange={(e) => setProject(e.target.value)}
                   className="ado-filter-select"
+                  disabled={isLoadingProjects}
                 >
                   <option value="All Projects">All Projects</option>
-                  <option value="EX Intake and Change Management">EX Intake and Change Management</option>
-                  <option value="AIO Portal">AIO Portal</option>
-                  <option value="Build and Lock Portal">Build and Lock Portal</option>
-                  <option value="Clear">Clear</option>
-                  <option value="HomeFundIt">HomeFundIt</option>
-                  <option value="List and Lock">List and Lock</option>
-                  <option value="Marketing Hub">Marketing Hub</option>
-                  <option value="SmartApp">SmartApp</option>
+                  {projects.map((proj) => (
+                    <option key={proj.id} value={proj.name}>
+                      {proj.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 

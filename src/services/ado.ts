@@ -40,6 +40,26 @@ export interface SearchADOResult {
   count: number;
 }
 
+export interface ADOProject {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface FetchProjectsResult {
+  success: boolean;
+  projects: ADOProject[];
+  count: number;
+}
+
+/**
+ * Fetch all available ADO projects from the organization
+ */
+export const fetchADOProjects = async (): Promise<FetchProjectsResult> => {
+  const response = await axios.get('/api/ado/projects');
+  return response.data;
+};
+
 /**
  * Search for ADO work items using the serverless API
  */
