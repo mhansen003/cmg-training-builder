@@ -33,8 +33,11 @@ export default async function handler(
     const {
       searchText,
       workItemType,
+      workItemTypes,
       state,
+      states,
       project,
+      projects,
       iterationPath,
       assignedTo,
       createdBy,
@@ -42,7 +45,7 @@ export default async function handler(
       createdDateTo,
       changedDateFrom,
       changedDateTo,
-      maxResults = 50
+      maxResults = 100
     } = req.body;
 
     // Get ADO credentials from environment variables
@@ -58,22 +61,41 @@ export default async function handler(
     // Build WIQL query
     const conditions: string[] = [];
 
-    // Add work item type filter only if specified
-    if (workItemType) {
-      conditions.push(`[System.WorkItemType] = '${workItemType}'`);
+    // Add work item type filter (support both single and multi-select)
+    const typesArray = workItemTypes && workItemTypes.length > 0 ? workItemTypes : (workItemType ? [workItemType] : []);
+    if (typesArray.length > 0) {
+      if (typesArray.length === 1) {
+        conditions.push(`[System.WorkItemType] = '${typesArray[0]}'`);
+      } else {
+        const typeConditions = typesArray.map(t => `[System.WorkItemType] = '${t}'`).join(' OR ');
+        conditions.push(`(${typeConditions})`);
+      }
     }
 
-    // Add project filter only if specified
-    if (project && project !== 'All Projects') {
-      conditions.push(`[System.TeamProject] = '${project.replace(/'/g, "''")}'`);
+    // Add project filter (support both single and multi-select)
+    const projectsArray = projects && projects.length > 0 ? projects : (project && project !== 'All Projects' ? [project] : []);
+    if (projectsArray.length > 0) {
+      if (projectsArray.length === 1) {
+        conditions.push(`[System.TeamProject] = '${projectsArray[0].replace(/'/g, "''")}'`);
+      } else {
+        const projectConditions = projectsArray.map(p => `[System.TeamProject] = '${p.replace(/'/g, "''")}'`).join(' OR ');
+        conditions.push(`(${projectConditions})`);
+      }
     }
 
     if (searchText && searchText.trim().length > 0) {
       conditions.push(`[System.Title] CONTAINS '${searchText.replace(/'/g, "''")}'`);
     }
 
-    if (state) {
-      conditions.push(`[System.State] = '${state}'`);
+    // Add state filter (support both single and multi-select)
+    const statesArray = states && states.length > 0 ? states : (state ? [state] : []);
+    if (statesArray.length > 0) {
+      if (statesArray.length === 1) {
+        conditions.push(`[System.State] = '${statesArray[0]}'`);
+      } else {
+        const stateConditions = statesArray.map(s => `[System.State] = '${s}'`).join(' OR ');
+        conditions.push(`(${stateConditions})`);
+      }
     }
 
     // Sprint/Iteration filter

@@ -21,9 +21,12 @@ export interface ADOWorkItem {
 
 export interface SearchADOParams {
   searchText?: string;
-  workItemType?: string;
-  state?: string;
-  project?: string;
+  workItemType?: string;  // Legacy single type
+  workItemTypes?: string[];  // New multi-select types
+  state?: string;  // Legacy single state
+  states?: string[];  // New multi-select states
+  project?: string;  // Legacy single project
+  projects?: string[];  // New multi-select projects
   iterationPath?: string;
   assignedTo?: string;
   createdBy?: string;

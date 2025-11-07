@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { searchADOWorkItems, fetchADOProjects, type ADOWorkItem, type ADOProject } from '../services/ado';
+import MultiSelectDropdown from './MultiSelectDropdown';
 import './ADOImportModal.css';
 
 interface ADOImportModalProps {
@@ -10,9 +11,9 @@ interface ADOImportModalProps {
 
 export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportModalProps) {
   const [searchText, setSearchText] = useState('');
-  const [workItemType, setWorkItemType] = useState('All Types');
-  const [state, setState] = useState('');
-  const [project, setProject] = useState('All Projects');
+  const [workItemTypes, setWorkItemTypes] = useState<string[]>([]);
+  const [states, setStates] = useState<string[]>([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<ADOWorkItem[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -21,7 +22,6 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   // Dynamic project fetching
   const [projects, setProjects] = useState<ADOProject[]>([]);
   const [isLoadingProjects, setIsLoadingProjects] = useState(false);
-  const [projectsError, setProjectsError] = useState<string | null>(null);
 
   // New advanced filters
   const [iterationPath, setIterationPath] = useState('');
@@ -35,19 +35,35 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   // View modal state
   const [viewingWorkItem, setViewingWorkItem] = useState<ADOWorkItem | null>(null);
 
+  // Work item type options
+  const workItemTypeOptions = [
+    { value: 'User Story', label: 'User Story' },
+    { value: 'Bug', label: 'Bug' },
+    { value: 'Task', label: 'Task' },
+    { value: 'Feature', label: 'Feature' },
+    { value: 'Epic', label: 'Epic' },
+  ];
+
+  // State options
+  const stateOptions = [
+    { value: 'New', label: 'New' },
+    { value: 'Active', label: 'Active' },
+    { value: 'Resolved', label: 'Resolved' },
+    { value: 'Closed', label: 'Closed' },
+    { value: 'Removed', label: 'Removed' },
+  ];
+
   // Fetch projects when modal opens
   useEffect(() => {
     if (isOpen && projects.length === 0 && !isLoadingProjects) {
       const loadProjects = async () => {
         setIsLoadingProjects(true);
-        setProjectsError(null);
         try {
           const result = await fetchADOProjects();
           setProjects(result.projects);
         } catch (err: any) {
           console.error('Failed to fetch projects:', err);
-          const errorMessage = err.response?.data?.error || err.message || 'Failed to load projects';
-          setProjectsError(errorMessage);
+          setError(err.response?.data?.error || err.message || 'Failed to load projects');
         } finally {
           setIsLoadingProjects(false);
         }
@@ -60,9 +76,9 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   useEffect(() => {
     if (isOpen) {
       setSearchText('');
-      setWorkItemType('All Types');
-      setState('');
-      setProject('All Projects');
+      setWorkItemTypes([]);
+      setStates([]);
+      setSelectedProjects([]);
       setIterationPath('');
       setAssignedTo('');
       setCreatedBy('');
@@ -73,7 +89,6 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
       setSearchResults([]);
       setSelectedIds(new Set());
       setError(null);
-      // Don't auto-search - wait for user to click Search button
     }
   }, [isOpen]);
 
@@ -86,9 +101,9 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
 
       const result = await searchADOWorkItems({
         searchText: query.trim() || undefined,
-        workItemType: workItemType === 'All Types' ? undefined : workItemType,
-        state: state || undefined,
-        project,
+        workItemTypes: workItemTypes.length > 0 ? workItemTypes : undefined,
+        states: states.length > 0 ? states : undefined,
+        projects: selectedProjects.length > 0 ? selectedProjects : undefined,
         iterationPath: iterationPath || undefined,
         assignedTo: assignedTo || undefined,
         createdBy: createdBy || undefined,
@@ -96,7 +111,7 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
         createdDateTo: createdDateTo || undefined,
         changedDateFrom: changedDateFrom || undefined,
         changedDateTo: changedDateTo || undefined,
-        maxResults: 50
+        maxResults: 100
       });
 
       setSearchResults(result.workItems);
@@ -108,7 +123,6 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
       console.error('Search error:', err);
       console.error('Response data:', err.response?.data);
 
-      // Show detailed error message
       const errorMessage = err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to search ADO work items';
       const errorDetails = err.response?.data?.details;
 
@@ -135,6 +149,15 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
     setSelectedIds(newSelection);
   };
 
+  const handleSelectAll = () => {
+    const allIds = new Set(searchResults.map(wi => wi.id));
+    setSelectedIds(allIds);
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedIds(new Set());
+  };
+
   const handleImport = () => {
     const selected = searchResults.filter(wi => selectedIds.has(wi.id));
     if (selected.length === 0) {
@@ -154,12 +177,16 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
   if (!isOpen) return null;
 
   const selectedWorkItems = searchResults.filter(wi => selectedIds.has(wi.id));
+  const projectOptions = projects.map(p => ({ value: p.name, label: p.name }));
 
   return (
     <div className="ado-modal-overlay" onClick={onClose}>
-      <div className="ado-modal-container" onClick={(e) => e.stopPropagation()}>
+      <div className="ado-modal-container enhanced" onClick={(e) => e.stopPropagation()}>
         <div className="ado-modal-header">
-          <h2>Import from Azure DevOps</h2>
+          <div>
+            <h2>Import from Azure DevOps</h2>
+            <p className="ado-modal-subtitle">Advanced Search & Multi-Select</p>
+          </div>
           <button className="ado-modal-close" onClick={onClose} aria-label="Close modal">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -173,7 +200,7 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
             <div className="ado-search-bar">
               <input
                 type="text"
-                placeholder="Search work items by title (optional - leave empty to see all)..."
+                placeholder="Search work items by title (optional)..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 onKeyPress={handleKeyPress}
@@ -201,65 +228,37 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
             </div>
 
             <p className="ado-search-hint">
-              💡 No filters? We'll show work items changed in the last 12 months across all projects
+              💡 Use filters below to narrow your search, then click Search to find work items
             </p>
 
-            <div className="ado-filters">
-              <div className="ado-filter-group">
-                <label htmlFor="project">
-                  Project
-                  {isLoadingProjects && <span style={{ marginLeft: '8px', fontSize: '0.85em', color: '#666' }}>(Loading...)</span>}
-                  {projectsError && <span style={{ marginLeft: '8px', fontSize: '0.85em', color: '#d32f2f' }}>(Failed to load)</span>}
-                </label>
-                <select
-                  id="project"
-                  value={project}
-                  onChange={(e) => setProject(e.target.value)}
-                  className="ado-filter-select"
-                  disabled={isLoadingProjects}
-                >
-                  <option value="All Projects">All Projects</option>
-                  {projects.map((proj) => (
-                    <option key={proj.id} value={proj.name}>
-                      {proj.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div className="ado-filters-grid">
+              <MultiSelectDropdown
+                label="Projects"
+                options={projectOptions}
+                selectedValues={selectedProjects}
+                onChange={setSelectedProjects}
+                placeholder="Select projects..."
+                disabled={isLoadingProjects}
+                allOptionLabel="All Projects"
+              />
 
-              <div className="ado-filter-group">
-                <label htmlFor="workItemType">Work Item Type</label>
-                <select
-                  id="workItemType"
-                  value={workItemType}
-                  onChange={(e) => setWorkItemType(e.target.value)}
-                  className="ado-filter-select"
-                >
-                  <option value="All Types">All Types</option>
-                  <option value="User Story">User Story</option>
-                  <option value="Bug">Bug</option>
-                  <option value="Task">Task</option>
-                  <option value="Feature">Feature</option>
-                  <option value="Epic">Epic</option>
-                </select>
-              </div>
+              <MultiSelectDropdown
+                label="Work Item Types"
+                options={workItemTypeOptions}
+                selectedValues={workItemTypes}
+                onChange={setWorkItemTypes}
+                placeholder="Select types..."
+                allOptionLabel="All Types"
+              />
 
-              <div className="ado-filter-group">
-                <label htmlFor="state">State</label>
-                <select
-                  id="state"
-                  value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  className="ado-filter-select"
-                >
-                  <option value="">All States</option>
-                  <option value="New">New</option>
-                  <option value="Active">Active</option>
-                  <option value="Resolved">Resolved</option>
-                  <option value="Closed">Closed</option>
-                  <option value="Removed">Removed</option>
-                </select>
-              </div>
+              <MultiSelectDropdown
+                label="States"
+                options={stateOptions}
+                selectedValues={states}
+                onChange={setStates}
+                placeholder="Select states..."
+                allOptionLabel="All States"
+              />
 
               <div className="ado-filter-group">
                 <label htmlFor="iterationPath">Sprint/Iteration</label>
@@ -269,82 +268,83 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                   value={iterationPath}
                   onChange={(e) => setIterationPath(e.target.value)}
                   placeholder="e.g., Sprint 23"
-                  className="ado-filter-select"
+                  className="ado-filter-input"
                 />
               </div>
             </div>
 
-            <div className="ado-filters-row-2">
-              <div className="ado-filter-group">
-                <label htmlFor="assignedTo">Assigned To</label>
-                <input
-                  id="assignedTo"
-                  type="text"
-                  value={assignedTo}
-                  onChange={(e) => setAssignedTo(e.target.value)}
-                  placeholder="Name or email"
-                  className="ado-filter-select"
-                />
-              </div>
+            <details className="ado-advanced-filters">
+              <summary>Advanced Filters</summary>
+              <div className="ado-filters-grid">
+                <div className="ado-filter-group">
+                  <label htmlFor="assignedTo">Assigned To</label>
+                  <input
+                    id="assignedTo"
+                    type="text"
+                    value={assignedTo}
+                    onChange={(e) => setAssignedTo(e.target.value)}
+                    placeholder="Name or email"
+                    className="ado-filter-input"
+                  />
+                </div>
 
-              <div className="ado-filter-group">
-                <label htmlFor="createdBy">Created By</label>
-                <input
-                  id="createdBy"
-                  type="text"
-                  value={createdBy}
-                  onChange={(e) => setCreatedBy(e.target.value)}
-                  placeholder="Name or email"
-                  className="ado-filter-select"
-                />
-              </div>
+                <div className="ado-filter-group">
+                  <label htmlFor="createdBy">Created By</label>
+                  <input
+                    id="createdBy"
+                    type="text"
+                    value={createdBy}
+                    onChange={(e) => setCreatedBy(e.target.value)}
+                    placeholder="Name or email"
+                    className="ado-filter-input"
+                  />
+                </div>
 
-              <div className="ado-filter-group">
-                <label htmlFor="createdDateFrom">Created Date From</label>
-                <input
-                  id="createdDateFrom"
-                  type="date"
-                  value={createdDateFrom}
-                  onChange={(e) => setCreatedDateFrom(e.target.value)}
-                  className="ado-filter-select"
-                />
-              </div>
-            </div>
+                <div className="ado-filter-group">
+                  <label htmlFor="createdDateFrom">Created Date From</label>
+                  <input
+                    id="createdDateFrom"
+                    type="date"
+                    value={createdDateFrom}
+                    onChange={(e) => setCreatedDateFrom(e.target.value)}
+                    className="ado-filter-input"
+                  />
+                </div>
 
-            <div className="ado-filters-row-2">
-              <div className="ado-filter-group">
-                <label htmlFor="createdDateTo">Created Date To</label>
-                <input
-                  id="createdDateTo"
-                  type="date"
-                  value={createdDateTo}
-                  onChange={(e) => setCreatedDateTo(e.target.value)}
-                  className="ado-filter-select"
-                />
-              </div>
+                <div className="ado-filter-group">
+                  <label htmlFor="createdDateTo">Created Date To</label>
+                  <input
+                    id="createdDateTo"
+                    type="date"
+                    value={createdDateTo}
+                    onChange={(e) => setCreatedDateTo(e.target.value)}
+                    className="ado-filter-input"
+                  />
+                </div>
 
-              <div className="ado-filter-group">
-                <label htmlFor="changedDateFrom">Changed Date From</label>
-                <input
-                  id="changedDateFrom"
-                  type="date"
-                  value={changedDateFrom}
-                  onChange={(e) => setChangedDateFrom(e.target.value)}
-                  className="ado-filter-select"
-                />
-              </div>
+                <div className="ado-filter-group">
+                  <label htmlFor="changedDateFrom">Changed Date From</label>
+                  <input
+                    id="changedDateFrom"
+                    type="date"
+                    value={changedDateFrom}
+                    onChange={(e) => setChangedDateFrom(e.target.value)}
+                    className="ado-filter-input"
+                  />
+                </div>
 
-              <div className="ado-filter-group">
-                <label htmlFor="changedDateTo">Changed Date To</label>
-                <input
-                  id="changedDateTo"
-                  type="date"
-                  value={changedDateTo}
-                  onChange={(e) => setChangedDateTo(e.target.value)}
-                  className="ado-filter-select"
-                />
+                <div className="ado-filter-group">
+                  <label htmlFor="changedDateTo">Changed Date To</label>
+                  <input
+                    id="changedDateTo"
+                    type="date"
+                    value={changedDateTo}
+                    onChange={(e) => setChangedDateTo(e.target.value)}
+                    className="ado-filter-input"
+                  />
+                </div>
               </div>
-            </div>
+            </details>
           </div>
 
           {/* Error Message */}
@@ -362,9 +362,25 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
             <div className="ado-results-header">
               <h3>Search Results ({searchResults.length})</h3>
               {searchResults.length > 0 && (
-                <span className="ado-selected-count">
-                  {selectedIds.size} selected
-                </span>
+                <div className="ado-results-actions">
+                  <span className="ado-selected-count">
+                    {selectedIds.size} selected
+                  </span>
+                  <button
+                    onClick={handleSelectAll}
+                    className="ado-select-all-btn"
+                    disabled={selectedIds.size === searchResults.length}
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={handleDeselectAll}
+                    className="ado-deselect-all-btn"
+                    disabled={selectedIds.size === 0}
+                  >
+                    Deselect All
+                  </button>
+                </div>
               )}
             </div>
 
@@ -376,7 +392,11 @@ export default function ADOImportModal({ isOpen, onClose, onImport }: ADOImportM
                 </div>
               ) : searchResults.length === 0 ? (
                 <div className="ado-empty-state">
-                  <p>No work items found. Try adjusting your search criteria.</p>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <p>No work items found</p>
+                  <p className="ado-empty-hint">Try adjusting your search criteria or filters</p>
                 </div>
               ) : (
                 searchResults.map((workItem) => {
