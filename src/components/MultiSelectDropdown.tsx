@@ -138,8 +138,8 @@ export default function MultiSelectDropdown({
                 <input
                   type="checkbox"
                   checked={isAllSelected}
-                  onChange={() => {}}
-                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => handleToggleOption('all')}
+                  readOnly={false}
                 />
                 <span>{allOptionLabel}</span>
               </div>
@@ -155,8 +155,8 @@ export default function MultiSelectDropdown({
                     <input
                       type="checkbox"
                       checked={isSelected}
-                      onChange={() => {}}
-                      onClick={(e) => e.stopPropagation()}
+                      onChange={() => handleToggleOption(option.value)}
+                      readOnly={false}
                     />
                     <span>{option.label}</span>
                   </div>
